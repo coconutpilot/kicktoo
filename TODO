@@ -4,6 +4,4 @@
 
 - add LiLo boot support (default will always stay GRUB)
 - add swap partition as extended by default instead of primary (this would allow gentoo-lvm.profile and another system to dual boot)
-- for gentoo-luks.profile instead of harcoding static-libs deps for cryptsetup use: emerge --autounmask-write && etc-update --automode -5
-  but --automode portage-2.1.10.56 is not yet in stable
 - make a gentoo-luks-lvm.profile

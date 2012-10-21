@@ -161,14 +161,8 @@ extra_packages          dhcpcd # openssh syslog-ng
 # }
 
 pre_build_kernel() {
-    for i in dev-libs/libgcrypt     \
-             dev-libs/popt          \
-             dev-libs/libgpg-error  \
-             sys-apps/util-linux    \
-             sys-fs/cryptsetup
-    do
-        spawn_chroot "echo $i static-libs >> /etc/portage/package.use" || die "cannot append $i to package.use"
-    done
+    spawn_chroot "emerge cryptsetup --autounmask-write" || die "could not autounmask cryptsetup"
+    spawn_chroot "etc-update --automode -5" || die "could not etc-update --automode -5"
     spawn_chroot "emerge cryptsetup" || die "could not emerge cryptsetup"
 }
 # skip build_kernel
