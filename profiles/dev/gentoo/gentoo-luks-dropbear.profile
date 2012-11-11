@@ -44,7 +44,7 @@ kernel_sources          gentoo-sources
 kernel_builder          kigen
 initramfs_builder       kigen
 kigen_kernel_opts       -d 
-kigen_initramfs_opts    --host-dropbear --source-ttyecho --source-luks --source-screen --source-disklabel --dynlibs --rootpasswd=a 
+kigen_initramfs_opts    --host-dropbear --source-ttyecho --source-luks --source-disklabel --dynlibs --rootpasswd=a 
 
 # ship the binary kernel instead of compiling (faster)
 #kernel_binary           $(pwd)/kbin/luks/kernel-genkernel-${arch}-3.2.1-gentoo-r2
