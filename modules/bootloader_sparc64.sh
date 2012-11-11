@@ -14,7 +14,8 @@ configure_bootloader_silo() {
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
-        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+#        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+        local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
         echo -e "\nimage = /boot/${kernel}" >> ${chroot_dir}/boot/silo.conf
         echo "  label = ${kv}" >> ${chroot_dir}/boot/silo.conf
         if [ -z "${initrd}" ]; then

@@ -12,7 +12,8 @@ configure_bootloader_grub() {
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
-        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+#        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+        local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
         echo "title=${distro} Linux ${kv}" >> ${chroot_dir}/boot/grub/grub.conf
         local grub_device="$(map_device_to_grub_device ${boot_device})"
         if [ -z "${grub_device}" ]; then
@@ -52,7 +53,8 @@ configure_bootloader_grub2() {
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
-        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+#        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
+        local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
         echo "menuentry \"${distro} Linux ${kv}\" {" >> ${chroot_dir}/boot/grub/grub.cfg
         local grub_device="$(map_device_to_grub2_device ${boot_device})"
         if [ -z "${grub_device}" ]; then
