@@ -83,7 +83,17 @@ chroot_lvm() {
     chroot ${chroot_dir} /bin/bash
 }
 
+# FIXME where is chroot_luks_lvm()?
+
 chroot_close() {
+# FIXME
+#    for i in /dev /sys /proc /boot
+#    do
+#        if umount -l -f ${chroot_dir}${i} &>/dev/null; then
+#            echo "${chroot_dir}${i} umounted"
+#        fi
+#    done
+
     if umount -l -f ${chroot_dir}/dev &>/dev/null; then
         echo "${chroot_dir}/dev umounted"
     fi
