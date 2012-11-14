@@ -366,6 +366,7 @@ unpack_repo_tree() {
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
         fi
     fi
+    spawn "rm -f ${chroot_dir}/${stage_name%.*}"                                || die "could not remove portage tarball"
 }
 
 copy_kernel() {
