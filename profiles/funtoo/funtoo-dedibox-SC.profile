@@ -11,11 +11,11 @@ mountfs /dev/sda2 swap
 mountfs /dev/sda3 ext4 / noatime
 
 if [ "${arch}" == "x86" ]; then
-    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-current.tar.xz
+    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
 elif [ "${arch}" == "amd64" ]; then
-    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-current.tar.xz
+    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-latest.tar.xz
 fi
-tree_type     snapshot  http://ftp.osuosl.org/pub/funtoo/funtoo-stable/snapshots/portage-current.tar.xz
+tree_type     snapshot  http://ftp.osuosl.org/pub/funtoo/funtoo-stable/snapshots/portage-latest.tar.xz
 
 # compile kernel from sources using the right .config
 kernel_config_file      $(pwd)/kconfig/dedibox-SC-${arch}-kernel.config
