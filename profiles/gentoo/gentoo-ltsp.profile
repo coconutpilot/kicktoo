@@ -4,27 +4,27 @@
 
 # setting config vars
 if [ "${ARCH}" = "i486" ] || [ "${ARCH}" = "i686" ]; then
-	use_linux32
+    use_linux32
 fi
 
 if [ -z "${BASE}" ]; then
-	BASE="/opt/ltsp"
+    BASE="/opt/ltsp"
 fi
 
 if [ -z "${NAME}" ]; then
-	NAME="${ARCH}"
+    NAME="${ARCH}"
 fi
 
 if [ -z "${CHROOT}" ]; then
-	CHROOT="${BASE}/${NAME}"
+    CHROOT="${BASE}/${NAME}"
 fi
 
 if [ -z "${LOCALE}" ]; then
-	LOCALE="en_US.UTF-8"
+    LOCALE="en_US.UTF-8"
 fi
 
 if [ -z "${TIMEZONE}" ]; then
-	TIMEZONE="$(</etc/timezone)"
+    TIMEZONE="$(</etc/timezone)"
 fi
 
 chroot_dir $CHROOT
@@ -39,12 +39,12 @@ makeconf_line EMERGE_WARNING_DELAY 0
 makeconf_line INSTALL_MASK "TODO.bz2 AUTHORS.bz2 NEWS.bz2 README.bz2 ChangeLog.bz2"
 
 if [ -n "${MIRRORS}" ]; then
-	makeconf_line GENTOO_MIRRORS "${MIRRORS}"
+    makeconf_line GENTOO_MIRRORS "${MIRRORS}"
 fi
 
 if [ "${CCACHE}" == "true" ]; then
-	makeconf_line FEATURES "ccache"
-	makeconf_line CCACHE_SIZE "4G"
+    makeconf_line FEATURES "ccache"
+    makeconf_line CCACHE_SIZE "4G"
 fi
 
 locale_set "${LOCALE}"
@@ -59,79 +59,79 @@ rcadd ltsp-client default
 
 # Step control extra functions
 mount_bind() {
-	local source="${1}"
-	local dest="${2}"
+    local source="${1}"
+    local dest="${2}"
 
-	spawn "mkdir -p ${source}"
-	spawn "mkdir -p ${dest}"
-	spawn "mount ${source} ${dest} -o bind"
-	echo "${dest}" >> /tmp/install.umount
+    spawn "mkdir -p ${source}"
+    spawn "mkdir -p ${dest}"
+    spawn "mount ${source} ${dest} -o bind"
+    echo "${dest}" >> /tmp/install.umount
 }
 
 post_unpack_stage_tarball() {
-	# bind mounting portage and binary package dir
-	mount_bind "/usr/portage" "${chroot_dir}/usr/portage"
-	mount_bind "/usr/portage/packages/${ARCH}" "${chroot_dir}/usr/portage/packages"
-	
-	# bind mounting layman, for overlay packages
-	# TODO: remove this mounting when the ltsp ebuilds are in the tree
-	mount_bind "/var/lib/layman" "${chroot_dir}/var/lib/layman"
+    # bind mounting portage and binary package dir
+    mount_bind "/usr/portage" "${chroot_dir}/usr/portage"
+    mount_bind "/usr/portage/packages/${ARCH}" "${chroot_dir}/usr/portage/packages"
+    
+    # bind mounting layman, for overlay packages
+    # TODO: remove this mounting when the ltsp ebuilds are in the tree
+    mount_bind "/var/lib/layman" "${chroot_dir}/var/lib/layman"
 
-	# TODO: don't add this by default
-	cat >> ${chroot_dir}/etc/make.conf <<- EOF
-	source /var/lib/layman/make.conf
-	EOF
+    # TODO: don't add this by default
+    cat >> ${chroot_dir}/etc/make.conf <<- EOF
+    source /var/lib/layman/make.conf
+    EOF
 
-	cat > ${chroot_dir}/etc/fstab <<- EOF
-	# DO NOT DELETE
-	EOF
+    cat > ${chroot_dir}/etc/fstab <<- EOF
+    # DO NOT DELETE
+    EOF
 
-	cat >> ${chroot_dir}/etc/portage/package.use <<- EOF
-	# req by pulseaudio
-	sys-fs/udev extras
-	# req by xorg-server
-	dev-libs/libxml2 python
-	# req by mesa
-	x11-libs/libdrm libkms
-	EOF
+    cat >> ${chroot_dir}/etc/portage/package.use <<- EOF
+    # req by pulseaudio
+    sys-fs/udev extras
+    # req by xorg-server
+    dev-libs/libxml2 python
+    # req by mesa
+    x11-libs/libdrm libkms
+    EOF
 }
 
 pre_build_kernel() {
-	if [ -n "${KERNEL_CONFIG_URI}" ]; then
-		kernel_config_uri "${KERNEL_CONFIG_URI}"
-	fi
+    if [ -n "${KERNEL_CONFIG_URI}" ]; then
+        kernel_config_uri "${KERNEL_CONFIG_URI}"
+    fi
 
-	if [ -n "${KERNEL_SOURCES}" ]; then
- 		kernel_sources "${KERNEL_SOURCES}"
- 	fi
+    if [ -n "${KERNEL_SOURCES}" ]; then
+         kernel_sources "${KERNEL_SOURCES}"
+     fi
 
     genkernel_opts --makeopts="${MAKEOPTS}"
 
-	if [ "${CCACHE}" == "true" ]; then
-		spawn_chroot "emerge ccache"
-		mount_bind "/var/tmp/ccache/${ARCH}" "${chroot_dir}/var/tmp/ccache"
-		genkernel_opts --makeopts="${MAKEOPTS}" --kernel-cc="/usr/lib/ccache/bin/gcc" --utils-cc="/usr/lib/ccache/bin/gcc"
-	fi
+    if [ "${CCACHE}" == "true" ]; then
+        spawn_chroot "emerge ccache"
+        mount_bind "/var/tmp/ccache/${ARCH}" "${chroot_dir}/var/tmp/ccache"
+        genkernel_opts --makeopts="${MAKEOPTS}" --kernel-cc="/usr/lib/ccache/bin/gcc" --utils-cc="/usr/lib/ccache/bin/gcc"
+    fi
 }
 
 pre_install_extra_packages() {
-	spawn_chroot "emerge --newuse udev"
-	spawn_chroot "emerge --update --deep world"
+    spawn_chroot "emerge --newuse udev"
+    spawn_chroot "emerge --update --deep world"
 }
 
 post_install_extra_packages() {
-	# remove excluded packages
-	for package in ${EXCLUDE}; do
-		spawn_chroot "emerge --unmerge ${package}"
-	done
+    # remove excluded packages
+    for package in ${EXCLUDE}; do
+        spawn_chroot "emerge --unmerge ${package}"
+    done
 
-	# point /etc/mtab to /proc/mounts
-	spawn "ln -sf /proc/mounts ${chroot_dir}/etc/mtab"
+    # point /etc/mtab to /proc/mounts
+    spawn "ln -sf /proc/mounts ${chroot_dir}/etc/mtab"
 
-	# make sure these exist
-	mkdir -p ${chroot_dir}/var/lib/nfs
-	mkdir -p ${chroot_dir}/var/lib/pulse
-	
-	# required for openrc's bootmisc
-	mkdir -p ${chroot_dir}/var/lib/misc
+    # make sure these exist
+    mkdir -p ${chroot_dir}/var/lib/nfs
+    mkdir -p ${chroot_dir}/var/lib/pulse
+    
+    # required for openrc's bootmisc
+    mkdir -p ${chroot_dir}/var/lib/misc
 }
