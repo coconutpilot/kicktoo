@@ -259,13 +259,15 @@ unpack_stage_tarball() {
             spawn "tar xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
         fi
     fi
+    spawn "rm -f ${chroot_dir}/${stage_name%.*}"                            || die "could not remove stage tarball"
 }
 
 create_makeconf() {
     O=$IFS
     IFS=$(echo -en "\n\b")
 
-    for var in $(set | grep ^makeconf_[A-Z]); do
+    for var in $(set | grep ^makeconf_[A-Z])
+    do
         makeconfline=$(echo $var | sed s/makeconf_// | sed s/\'/\"/g )
         cat >> ${chroot_dir}/etc/make.conf <<- EOF
 ${makeconfline}
