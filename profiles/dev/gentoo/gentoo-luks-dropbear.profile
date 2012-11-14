@@ -175,7 +175,9 @@ pre_install_kernel_builder() {
 
 pre_build_kernel() {
     # install cryptsetup and dropbear
-    spawn_chroot "emerge cryptsetup dropbear --autounmask-write" || die "could not autounmask cryptsetup and dropbear"
+    # FIXME for some reason "emerge cryptsetup dropbear --autounmask-write" returns 1 as it ran OK
+#    spawn_chroot "emerge cryptsetup dropbear --autounmask-write" || die "could not autounmask cryptsetup and dropbear"
+    spawn_chroot "emerge cryptsetup dropbear --autounmask-write" 
     spawn_chroot "etc-update --automode -5" || die "could not etc-update --automode -5"
     spawn_chroot "emerge cryptsetup dropbear" || die "could not emerge cryptsetup and dropbear"
 }
