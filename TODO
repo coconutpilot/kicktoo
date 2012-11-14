@@ -5,3 +5,10 @@
 - add LiLo boot support (default will always stay GRUB)
 - add swap partition as extended by default instead of primary (this would allow gentoo-lvm.profile and another system to dual boot)
 - make a gentoo-luks-lvm.profile
+- add SETUP="luks lvm" support for modules/setup.sh and make functions to test setup type
+  SETUP="" is default
+  SETUP="luks" is luks
+  SETUP="luks lvm" is luks+lvm
+  take care of vgchange warning using this
+  if is_setup "lvm" return 0 then call lvm_cleanup
+  
