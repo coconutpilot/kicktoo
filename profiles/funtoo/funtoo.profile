@@ -26,6 +26,7 @@ grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
 
 kernel_config_file      /dotconfig
 kernel_sources          gentoo-sources
+genkernel_opts          --loglevel=5
 
 timezone		UTC
 rootpw 			a
