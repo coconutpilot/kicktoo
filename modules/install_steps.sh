@@ -1,6 +1,6 @@
 run_pre_install_script() {
     if [ -n "${pre_install_script_uri}" ]; then
-        fetch "${pre_install_script_uri}" "${chroot_dir}/var/tmp/pre_install_script" || die "could not fetch pre-install script"
+        fetch "${pre_install_script_uri}" "${chroot_dir}/var/tmp/pre_install_script" || die "Could not fetch pre-install script"
         chmod +x "${chroot_dir}/var/tmp/pre_install_script"
         spawn_chroot "/var/tmp/pre_install_script"                                   || die "error running pre-install script"
         spawn "rm ${chroot_dir}/var/tmp/pre_install_script"
@@ -17,7 +17,7 @@ partition() {
         local device_temp="partitions_${device}"
         local device="/dev/$(echo "${device}" | sed  -e 's:_:/:g')"
         local device_size="$(get_device_size_in_mb ${device})"
-        create_disklabel ${device} || die "could not create disklabel for device ${device}"
+        create_disklabel ${device} || die "Could not create disklabel for device ${device}"
         for partition in $(eval echo \${${device_temp}}); do
             debug partition "partition is ${partition}"
             local minor=$(echo ${partition} | cut -d: -f1)
@@ -32,18 +32,18 @@ partition() {
             else
                 size_devicesize="$(human_size_to_mb ${size} ${device_size})"
                 newsize="$(echo ${size_devicesize} | cut -d '|' -f1)"
-                [ "${newsize}" = "-1" ] && die "could not translate size '${size}' to a usable value"
+                [ "${newsize}" = "-1" ] && die "Could not translate size '${size}' to a usable value"
                 device_size="$(echo ${size_devicesize} | cut -d '|' -f2)"
                 inputsize="${newsize}"
             fi
             [ -n "${bootable}" ] && bootable="*"
             
-            add_partition "${device}" "${minor}" "${inputsize}" "${type}" "${bootable}" || die "could not add partition ${minor} to device ${device}"
+            add_partition "${device}" "${minor}" "${inputsize}" "${type}" "${bootable}" || die "Could not add partition ${minor} to device ${device}"
         done
         
         if [ "$(get_arch)" != "sparc64" ]; then
         	# writing added partitions to device
-            sfdisk_command "${device}" && sleep 1 || die "could not write partitions ${partitions} to device ${device}"
+            sfdisk_command "${device}" && sleep 1 || die "Could not write partitions ${partitions} to device ${device}"
         
             # clear partitions for next device
             partitions=""
@@ -57,9 +57,9 @@ setup_mdraid() {
         local arrayopts=$(eval echo \${${array_temp}})
         local arraynum=$(echo ${array} | sed -e 's:^md::')
         if [ ! -e "/dev/md${arraynum}" ]; then
-            spawn "mknod /dev/md${arraynum} b 9 ${arraynum}"    || die "could not create device node for mdraid array ${array}"
+            spawn "mknod /dev/md${arraynum} b 9 ${arraynum}"    || die "Could not create device node for mdraid array ${array}"
         fi
-        spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+        spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "Could not create mdraid array ${array}"
     done
 }
 
@@ -69,16 +69,16 @@ setup_lvm() {
         local volgroup_devices="$(eval echo \${${volgroup_temp}})"
         for device in ${volgroup_devices}; do
             sleep 1
-            spawn "pvcreate -ffy ${device}" || die "could not run 'pvcreate' on ${device}"
+            spawn "pvcreate -ffy ${device}" || die "Could not run 'pvcreate' on ${device}"
         done
-        spawn "vgcreate ${volgroup} ${volgroup_devices}" || die "could not create volume group '${volgroup}' from devices: ${volgroup_devices}"
+        spawn "vgcreate ${volgroup} ${volgroup_devices}" || die "Could not create volume group '${volgroup}' from devices: ${volgroup_devices}"
     done
     for logvol in ${lvm_logvols}; do
         sleep 1
         local volgroup="$(echo ${logvol}| cut -d '|' -f1)"
         local size="$(echo ${logvol}    | cut -d '|' -f2)"
         local name="$(echo ${logvol}    | cut -d '|' -f3)"
-        spawn "lvcreate -L${size} -n${name} ${volgroup}" || die "could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
+        spawn "lvcreate -L${size} -n${name} ${volgroup}" || die "Could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
     done
 }
 
@@ -99,7 +99,7 @@ luks_devices(){
                 ;;
         esac
         if [ -n "${lukscmd}" ]; then
-            spawn "${lukscmd}" || die "could not luks: ${lukscmd}"
+            spawn "${lukscmd}" || die "Could not luks: ${lukscmd}"
         fi
     done
     unset boot_password # we don't need it anymore
@@ -145,7 +145,7 @@ format_devices() {
         esac
         if [ -n "${formatcmd}" ]; then
             sleep 0.1 # this helps not breaking formatting
-            spawn "${formatcmd}" || die "could not format ${devnode} with command: ${formatcmd}"
+            spawn "${formatcmd}" || die "Could not format ${devnode} with command: ${formatcmd}"
         fi
     done
 }
@@ -165,7 +165,7 @@ mount_local_partitions() {
             [ -n "${mountopts}" ] && mountopts="-o ${mountopts}"
             case "${type}" in
                 swap)
-                    spawn "swapon ${devnode}" || warn "could not activate swap ${devnode}"
+                    spawn "swapon ${devnode}" || warn "Could not activate swap ${devnode}"
                     swapoffs="${devnode} "
                     ;;
                 ext2|ext3|ext4|reiserfs|reiserfs3|xfs|btrfs|vfat)
@@ -176,7 +176,7 @@ mount_local_partitions() {
         sort -k5 /tmp/install.mounts | while read mount
         do
             mkdir -p $(echo ${mount} | awk '{ print $5; }')
-            spawn "${mount}" || die "could not mount with: ${mount}"
+            spawn "${mount}" || die "Could not mount with: ${mount}"
         done
     fi
 }
@@ -193,7 +193,7 @@ mount_network_shares() {
                 nfs)
                     spawn "/etc/init.d/nfsmount start"
                     mkdir -p ${chroot_dir}${mountpoint}
-                    spawn "mount -t nfs ${mountopts} ${export} ${chroot_dir}${mountpoint}" || die "could not mount ${type}/${export}"
+                    spawn "mount -t nfs ${mountopts} ${export} ${chroot_dir}${mountpoint}" || die "Could not mount ${type}/${export}"
                     ;;
                 *)
                     warn "mounting ${type} is not currently supported"
@@ -304,14 +304,14 @@ set_locale() {
 
 prepare_chroot() {
     debug prepare_chroot "copying /etc/resolv.conf into chroot"
-    spawn "cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf"   || die "could not copy /etc/resolv.conf into chroot"
+    spawn "cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf"   || die "Could not copy /etc/resolv.conf into chroot"
     debug prepare_chroot "mounting proc"
-    spawn "mount -t proc none ${chroot_dir}/proc"               || die "could not mount proc"
+    spawn "mount -t proc none ${chroot_dir}/proc"               || die "Could not mount proc"
     debug prepare_chroot "bind-mounting /dev"
-    spawn "mount -o rbind /dev ${chroot_dir}/dev/"              || die "could not rbind-mount /dev"
+    spawn "mount -o rbind /dev ${chroot_dir}/dev/"              || die "Could not rbind-mount /dev"
     debug prepare_chroot "bind-mounting /sys"
     [ -d ${chroot_dir}/sys ] || mkdir ${chroot_dir}/sys
-    spawn "mount -o bind /sys ${chroot_dir}/sys"                || die "could not bind-mount /sys"
+    spawn "mount -o bind /sys ${chroot_dir}/sys"                || die "Could not bind-mount /sys"
 }
 
 setup_fstab() {
@@ -343,11 +343,11 @@ setup_fstab() {
 fetch_repo_tree() {
     debug fetch_repo_tree "tree_type is ${tree_type}"
     if [ "${tree_type}" = "sync" ]; then
-        spawn_chroot "emerge --sync"                                                                     || die "could not sync portage tree"
+        spawn_chroot "emerge --sync"                                                                     || die "Could not sync portage tree"
     elif [ "${tree_type}" = "snapshot" ]; then
-        fetch "${portage_snapshot_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || die "could not fetch portage snapshot"
+        fetch "${portage_snapshot_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || die "Could not fetch portage snapshot"
     elif [ "${tree_type}" = "webrsync" ]; then
-        spawn_chroot "emerge-webrsync"                                                                   || die "could not emerge-webrsync"
+        spawn_chroot "emerge-webrsync"                                                                   || die "Could not emerge-webrsync"
     elif [ "${tree_type}" = "none" ]; then
         warn "'none' specified...skipping"
     else
@@ -382,46 +382,46 @@ unpack_repo_tree() {
 copy_kernel() {
     spawn_chroot "mount /boot"
     # let cp fail if files are not there
-    cp "${kernel_binary}"    "${chroot_dir}/boot" || die "could not copy precompiled kernel to ${chroot_dir}/boot"
-    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "could not copy precompiled kernel to ${chroot_dir}/boot"
-    cp "${systemmap_binary}" "${chroot_dir}/boot" || die "could not copy precompiled kernel to ${chroot_dir}/boot"
+    cp "${kernel_binary}"    "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
+    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
+    cp "${systemmap_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
 }
 
 install_kernel_builder() {
-    spawn_chroot "emerge ${kernel_builder}" || die "could not emerge ${kernel_builder}"
+    spawn_chroot "emerge ${kernel_builder}" || die "Could not emerge ${kernel_builder}"
 }
 
 install_initramfs_builder() {
-    # initramfs builder could already be installed in build_kernel
+    # initramfs builder Could already be installed in build_kernel
     if [ -z $(spawn_chroot "command -v ${initramfs_builder}") ]; then
-        spawn_chroot "emerge ${initramfs_builder}" || die "could not emerge ${initramfs_builder}"
+        spawn_chroot "emerge ${initramfs_builder}" || die "Could not emerge ${initramfs_builder}"
     fi
 }
 
 build_kernel() {
-    spawn_chroot "emerge ${kernel_sources}" || die "could not emerge kernel sources"
+    spawn_chroot "emerge ${kernel_sources}" || die "Could not emerge kernel sources"
 
     # use genkernel
     if [ "${kernel_builder}" == "genkernel" ]; then
         if [ -n "${kernel_config_uri}" ]; then
-            fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                       || die "could not fetch kernel config"
-            spawn_chroot "genkernel --kernel-config=/tmp/kconfig ${genkernel_opts} kernel" || die "could not build custom kernel"
+            fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                       || die "Could not fetch kernel config"
+            spawn_chroot "genkernel --kernel-config=/tmp/kconfig ${genkernel_opts} kernel" || die "Could not build custom kernel"
         elif [ -n "${kernel_config_file}" ]; then
-            cp "${kernel_config_file}" "${chroot_dir}/tmp/kconfig"                         || die "could not copy kernel config"
-            spawn_chroot "genkernel --kernel-config=/tmp/kconfig ${genkernel_opts} kernel" || die "could not build custom kernel"
+            cp "${kernel_config_file}" "${chroot_dir}/tmp/kconfig"                         || die "Could not copy kernel config"
+            spawn_chroot "genkernel --kernel-config=/tmp/kconfig ${genkernel_opts} kernel" || die "Could not build custom kernel"
         else
-            spawn_chroot "genkernel ${genkernel_opts} kernel"                              || die "could not build generic kernel"
+            spawn_chroot "genkernel ${genkernel_opts} kernel"                              || die "Could not build generic kernel"
         fi
     # use kigen 
     elif [ "${kernel_builder}" == "kigen" ]; then
         if [ -n "${kernel_config_uri}" ]; then
-            fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                  || die "could not fetch kernel config"
-            spawn_chroot "kigen --dotconfig=/tmp/kconfig ${kigen_kernel_opts} kernel" || die "could not build custom kernel"
+            fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                  || die "Could not fetch kernel config"
+            spawn_chroot "kigen --dotconfig=/tmp/kconfig ${kigen_kernel_opts} kernel" || die "Could not build custom kernel"
         elif [ -n "${kernel_config_file}" ]; then
-            cp "${kernel_config_file}" "${chroot_dir}/tmp/kconfig"                    || die "could not copy kernel config"
-            spawn_chroot "kigen --dotconfig=/tmp/kconfig ${kigen_kernel_opts} kernel" || die "could not build custom kernel"
+            cp "${kernel_config_file}" "${chroot_dir}/tmp/kconfig"                    || die "Could not copy kernel config"
+            spawn_chroot "kigen --dotconfig=/tmp/kconfig ${kigen_kernel_opts} kernel" || die "Could not build custom kernel"
         else
-            spawn_chroot "kigen ${kigen_kernel_opts} kernel"                          || die "could not build generic kernel"
+            spawn_chroot "kigen ${kigen_kernel_opts} kernel"                          || die "Could not build generic kernel"
         fi
     fi
 }
@@ -429,13 +429,13 @@ build_kernel() {
 build_initramfs() {
     # use genkernel
     if [ "${initramfs_builder}" == "genkernel" ]; then
-        spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "could not build initramfs"
+        spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "Could not build initramfs"
     # use kigen
     elif [ "${initramfs_builder}" == "kigen" ]; then
-        spawn_chroot "kigen ${kigen_initramfs_opts} initramfs"  || die "could not build initramfs"
+        spawn_chroot "kigen ${kigen_initramfs_opts} initramfs"  || die "Could not build initramfs"
     # use Dracut
     elif [ "${initramfs_builder}" == "dracut" ]; then
-        spawn_chroot "dracut --force ${dracut_initramfs_opts}"  || die "could not build initramfs"
+        spawn_chroot "dracut --force ${dracut_initramfs_opts}"  || die "Could not build initramfs"
     fi
 }
 
@@ -451,66 +451,66 @@ setup_network_post() {
                 echo -e "config_${device}=( \"${ipdhcp}\" )\nroutes_${device}=( \"default via ${gateway}\" )" >> ${chroot_dir}/etc/conf.d/net
             fi
             if [ ! -e "${chroot_dir}/etc/init.d/net.${device}" ]; then
-                spawn_chroot "ln -s net.lo /etc/init.d/net.${device}" || die "could not create symlink for device ${device}"
+                spawn_chroot "ln -s net.lo /etc/init.d/net.${device}" || die "Could not create symlink for device ${device}"
             fi
-            spawn_chroot "rc-update add net.${device} default" || die "could not add net.${device} to the default runlevel"
+            spawn_chroot "rc-update add net.${device} default" || die "Could not add net.${device} to the default runlevel"
         done
     fi
 }
 
 setup_root_password() {
     if [ -n "${root_password_hash}" ]; then
-        spawn_chroot "echo 'root:${root_password_hash}' | chpasswd -e"  || die "could not set root password"
+        spawn_chroot "echo 'root:${root_password_hash}' | chpasswd -e"  || die "Could not set root password"
     elif [ -n "${root_password}" ]; then
-        spawn_chroot "echo 'root:${root_password}'      | chpasswd"     || die "could not set root password"
+        spawn_chroot "echo 'root:${root_password}'      | chpasswd"     || die "Could not set root password"
     fi
 }
 
 setup_timezone() {
     if detect_baselayout2 ; then
-#        spawn_chroot "echo \"clock=\"${timezone}\" > /etc/conf.d/hwclock\"" || die "could not adjust clock config in /etc/conf.d/hwclock"
-#        spawn_chroot "echo \"${timezone} > /etc/timezone\""                 || die "could not set timezone in /etc/timezone"
-        spawn_chroot "sed -e 's:clock=\".*\":clock=\"${timezone}\":' /etc/conf.d/hwclock" || die "could not adjust clock config in /etc/conf.d/hwclock"
-        spawn_chroot "echo \"${timezone}\" > /etc/timezone"                               || die "could not set timezone in /etc/timezone"
-        spawn_chroot "cp /usr/share/zoneinfo/${timezone} /etc/localtime"                  || die "could not set timezone in /etc/localtime" 
+#        spawn_chroot "echo \"clock=\"${timezone}\" > /etc/conf.d/hwclock\"" || die "Could not adjust clock config in /etc/conf.d/hwclock"
+#        spawn_chroot "echo \"${timezone} > /etc/timezone\""                 || die "Could not set timezone in /etc/timezone"
+        spawn_chroot "sed -e 's:clock=\".*\":clock=\"${timezone}\":' /etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
+        spawn_chroot "echo \"${timezone}\" > /etc/timezone"                               || die "Could not set timezone in /etc/timezone"
+        spawn_chroot "cp /usr/share/zoneinfo/${timezone} /etc/localtime"                  || die "Could not set timezone in /etc/localtime" 
     else
         if [ -e "${chroot_dir}/etc/localtime" ] ; then
             spawn "rm ${chroot_dir}/etc/localtime 2>/dev/null"
         fi
-        spawn "ln -s ../usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"                            || die "could not set timezone"
-        spawn "/bin/sed -i 's:#TIMEZONE=\"Factory\":TIMEZONE=\"${timezone}\":' ${chroot_dir}/etc/conf.d/clock" || die "could not adjust TIMEZONE config in /etc/conf.d/clock"
+        spawn "ln -s ../usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"                            || die "Could not set timezone"
+        spawn "/bin/sed -i 's:#TIMEZONE=\"Factory\":TIMEZONE=\"${timezone}\":' ${chroot_dir}/etc/conf.d/clock" || die "Could not adjust TIMEZONE config in /etc/conf.d/clock"
     fi
 }
 
 setup_keymap(){
     if detect_baselayout2 ; then
         debug setup_keymap "Setting keymap=${keymap} to /etc/conf.d/keymaps"
-        spawn "/bin/sed -i 's:keymap=\"us\":keymap=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "could not adjust keymap config in /etc/conf.d/keymaps"
+        spawn "/bin/sed -i 's:keymap=\"us\":keymap=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "Could not adjust keymap config in /etc/conf.d/keymaps"
     else
         debug set_keymap "Setting KEYMAP=${keymap} to /etc/conf.d/keymaps"
-        spawn "/bin/sed -i 's:KEYMAP=\"us\":KEYMAP=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "could not adjust KEYMAP config in /etc/conf.d/keymaps"
+        spawn "/bin/sed -i 's:KEYMAP=\"us\":KEYMAP=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "Could not adjust KEYMAP config in /etc/conf.d/keymaps"
     fi
 }
 
 setup_host() {
     if detect_baselayout2 ; then
         debug setup_host "Setting hostname=${hostname} to /etc/conf.d/hostname"
-        spawn "/bin/sed -i 's:hostname=\"localhost\":hostname=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "could not adjust hostname config in /etc/conf.d/hostname"
+        spawn "/bin/sed -i 's:hostname=\"localhost\":hostname=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "Could not adjust hostname config in /etc/conf.d/hostname"
     else
         debug setup_host "Setting HOSTNAME=${hostname} to /etc/conf.d/hostname"
-        spawn "/bin/sed -i 's:HOSTNAME=\"localhost\":HOSTNAME=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "could not adjust HOSTNAME config in /etc/conf.d/hostname"
+        spawn "/bin/sed -i 's:HOSTNAME=\"localhost\":HOSTNAME=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "Could not adjust HOSTNAME config in /etc/conf.d/hostname"
     fi
 }
 
 install_bootloader() {
-    spawn_chroot "emerge ${bootloader}" || die "could not emerge bootloader"
+    spawn_chroot "emerge ${bootloader}" || die "Could not emerge bootloader"
 }
 
 configure_bootloader() {
     detect_grub2
 
     if $(isafunc configure_bootloader_${bootloader}); then
-        configure_bootloader_${bootloader} || die "could not configure bootloader ${bootloader}"
+        configure_bootloader_${bootloader} || die "Could not configure bootloader ${bootloader}"
     else
         die "I don't know how to configure ${bootloader}"
     fi
@@ -525,7 +525,7 @@ install_extra_packages() {
         local o
         for o in ${extra_packages}
         do
-            spawn_chroot "emerge ${o}" || die "could not emerge extra packages"
+            spawn_chroot "emerge ${o}" || die "Could not emerge extra packages"
         done
     fi
 }
@@ -535,7 +535,7 @@ add_and_remove_services() {
         for service_add in ${services_add}; do
             local service="$(echo ${service_add}  | cut -d '|' -f1)"
             local runlevel="$(echo ${service_add} | cut -d '|' -f2)"
-            spawn_chroot "rc-update add ${service} ${runlevel}" || die "could not add service ${service} to the ${runlevel} runlevel"
+            spawn_chroot "rc-update add ${service} ${runlevel}" || die "Could not add service ${service} to the ${runlevel} runlevel"
         done
     fi
     if [ -n "${services_del}" ]; then
@@ -549,7 +549,7 @@ add_and_remove_services() {
 
 run_post_install_script() {
     if [ -n "${post_install_script_uri}" ]; then
-        fetch "${post_install_script_uri}" "${chroot_dir}/var/tmp/post_install_script" || die "could not fetch post-install script"
+        fetch "${post_install_script_uri}" "${chroot_dir}/var/tmp/post_install_script" || die "Could not fetch post-install script"
         chmod +x "${chroot_dir}/var/tmp/post_install_script"
         spawn_chroot "/var/tmp/post_install_script"                                    || die "error running post-install script"
         spawn "rm ${chroot_dir}/var/tmp/post_install_script"
@@ -563,22 +563,22 @@ run_post_install_script() {
 cleanup() {
     if [ -f "/proc/mounts" ]; then
         for mnt in $(awk '{ print $2; }' /proc/mounts | grep ^${chroot_dir} | sort -r); do
-            spawn "umount ${mnt}" || warn "  could not unmount ${mnt}"
+            spawn "umount ${mnt}" || warn "  Could not unmount ${mnt}"
             sleep 0.3
         done
     fi
     for swap in $(echo ${swapoffs}); do
-        spawn "swapoff ${swap} 2>/dev/null" || warn "  could not deactivate swap on ${swap}"
+        spawn "swapoff ${swap} 2>/dev/null" || warn "  Could not deactivate swap on ${swap}"
     done
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
-        spawn "mdadm --manage --stop /dev/${array}" || die "could not stop mdraid array ${array}"
+        spawn "mdadm --manage --stop /dev/${array}" || die "Could not stop mdraid array ${array}"
     done
     if [ -d "/dev/mapper" ]; then
         # NOTE let lvm cleanup before luks 
-        spawn "vgchange -a n vg 2>/dev/null" || warn "could not run vgchange -a n vg"
+        spawn "vgchange -a n vg 2>/dev/null" || warn "Could not run vgchange -a n vg"
         sleep 0.3
         for luksdev in $(ls /dev/mapper | grep -v control); do
-            spawn "cryptsetup remove ${luksdev}" || warn "could not remove luks device /dev/mapper/${luksdev}"
+            spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
             sleep 0.3
         done
     fi
@@ -590,7 +590,7 @@ starting_cleanup() {
 
 finishing_cleanup() {
     if [ -f ${logfile} ] && [ -d ${chroot_dir} ]; then
-        spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "could not copy install logfile into chroot"
+        spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "Could not copy install logfile into chroot"
     fi
 
     cleanup
@@ -598,7 +598,7 @@ finishing_cleanup() {
 
 failure_cleanup() {
     if [ -f ${logfile} ]; then
-        spawn "mv ${logfile} ${logfile}.failed" || warn "could not move ${logfile} to ${logfile}.failed"
+        spawn "mv ${logfile} ${logfile}.failed" || warn "Could not move ${logfile} to ${logfile}.failed"
     fi
 
     cleanup
