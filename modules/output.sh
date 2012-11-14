@@ -20,7 +20,11 @@ debug() {
 notify() {
     local msg=$1
     
-    [ $verbose = 1 ] && echo -e " ${GOOD}*${NORMAL} ${msg}"
+    # It's nicer to let the user see a minimum of verbosity
+    # if -v is passed then show cmd output
+    # if -d is passed then show debug 
+#    [ $verbose = 1 ] && echo -e " ${GOOD}*${NORMAL} ${msg}"
+    echo -e " ${GOOD}*${NORMAL} ${msg}"
     log "${msg}"
 }
 
