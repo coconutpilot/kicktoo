@@ -44,7 +44,7 @@ kernel_sources          gentoo-sources
 kernel_builder          kigen
 initramfs_builder       kigen
 kigen_kernel_opts       -d 
-kigen_initramfs_opts    --host-dropbear --source-ttyecho --source-luks --source-disklabel --dynlibs --rootpasswd=a 
+kigen_initramfs_opts    --host-dropbear --source-ttyecho --source-luks --source-disklabel --dynlibs --rootpasswd=a # CHANGEME
 
 # ship the binary kernel instead of compiling (faster)
 #kernel_binary           $(pwd)/kbin/luks/kernel-genkernel-${arch}-3.2.1-gentoo-r2
@@ -53,7 +53,7 @@ kigen_initramfs_opts    --host-dropbear --source-ttyecho --source-luks --source-
 
 timezone                UTC
 bootloader              grub
-bootloader_kernel_args  crypt_root=/dev/sda3 # should match root device in the $luks variable
+bootloader_kernel_args  dodropbear ip=dhcp crypt_root=/dev/sda3 # should match root device in the $luks variable
 rootpw                  a # CHANGE ME
 keymap                  us # fr be-latin1
 hostname                gentoo-luks
