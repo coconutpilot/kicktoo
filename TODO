@@ -11,4 +11,5 @@
   SETUP="luks lvm" is luks+lvm
   take care of vgchange warning using this
   if is_setup "lvm" return 0 then call lvm_cleanup
-  
+- I saw somewhere there's an option for tar to extract tar.xz, find it and replace 
+- check if the same exists for lzma too
