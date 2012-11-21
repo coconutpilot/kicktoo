@@ -276,7 +276,7 @@ create_makeconf() {
     for var in $(set | grep ^makeconf_[A-Z])
     do
         makeconfline=$(echo $var | sed s/makeconf_// | sed s/\'/\"/g )
-        cat >> ${chroot_dir}/etc/make.conf <<- EOF
+        cat >> ${chroot_dir}/etc/portage/make.conf <<- EOF
 ${makeconfline}
 EOF
     done
