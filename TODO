@@ -11,4 +11,11 @@
   SETUP="luks lvm" is luks+lvm
   take care of vgchange warning using this
   if is_setup "lvm" return 0 then call lvm_cleanup
-  
+- funtoo boot
+  * sys-apps/gptfdisk
+      Available versions:  0.8.4 (~)0.8.5 {{KERNEL="linux"}}
+      Homepage:            http://www.rodsbooks.com/gdisk/
+      Description:         gdisk - GPT partition table manipulator for Linux
+  use gdisk instead of fdisk 
+  http://www.funtoo.org/wiki/Funtoo_Linux_Installation#Prepare_Hard_Disk
+  This should solve https://github.com/r1k0/kicktoo/issues/26
