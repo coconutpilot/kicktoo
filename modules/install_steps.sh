@@ -231,18 +231,14 @@ unpack_stage_tarball() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}"      || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}"      || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${tarball}"                           || die "Could not unxz stage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${tarball}"                         || die "Could not unlzma stage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
         fi
     # ${stage_file} is a dangerous option
     # it can screw things up if it's too big
@@ -253,18 +249,14 @@ unpack_stage_tarball() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${stage_name} -C ${chroot_dir}"   || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${stage_name} -C ${chroot_dir}"   || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${stage_name}"                        || die "Could not unxz stage tarball"
             spawn "tar xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${stage_name}"                      || die "Could not unlzma stage tarball"
             spawn "tar xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
-#            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
         fi
     fi
 }
@@ -363,18 +355,14 @@ unpack_repo_tree() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${tarball}"                               || die "Could not unxz portage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${tarball}"                             || die "Could not unlzma portage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
-#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
         fi
     fi
 }
@@ -392,7 +380,7 @@ install_kernel_builder() {
 }
 
 install_initramfs_builder() {
-    # initramfs builder Could already be installed in build_kernel
+    # initramfs builder could already be installed by install_kernel_builder
     if [ -z $(spawn_chroot "command -v ${initramfs_builder}") ]; then
         spawn_chroot "emerge ${initramfs_builder}" || die "Could not emerge ${initramfs_builder}"
     fi
@@ -427,13 +415,10 @@ build_kernel() {
 }
 
 build_initramfs() {
-    # use genkernel
     if [ "${initramfs_builder}" == "genkernel" ]; then
         spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "Could not build initramfs"
-    # use kigen
     elif [ "${initramfs_builder}" == "kigen" ]; then
         spawn_chroot "kigen ${kigen_initramfs_opts} initramfs"  || die "Could not build initramfs"
-    # use Dracut
     elif [ "${initramfs_builder}" == "dracut" ]; then
         spawn_chroot "dracut --force ${dracut_initramfs_opts}"  || die "Could not build initramfs"
     fi
@@ -468,8 +453,6 @@ setup_root_password() {
 
 setup_timezone() {
     if detect_baselayout2 ; then
-#        spawn_chroot "echo \"clock=\"${timezone}\" > /etc/conf.d/hwclock\"" || die "Could not adjust clock config in /etc/conf.d/hwclock"
-#        spawn_chroot "echo \"${timezone} > /etc/timezone\""                 || die "Could not set timezone in /etc/timezone"
         spawn_chroot "sed -e 's:clock=\".*\":clock=\"${timezone}\":' /etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
         spawn_chroot "echo \"${timezone}\" > /etc/timezone"                               || die "Could not set timezone in /etc/timezone"
         spawn_chroot "cp /usr/share/zoneinfo/${timezone} /etc/localtime"                  || die "Could not set timezone in /etc/localtime" 
@@ -517,8 +500,6 @@ configure_bootloader() {
 }
 
 install_extra_packages() {
-    local o
-    local p
     if [ -z "${extra_packages}" ]; then
         debug install_extra_packages "no extra packages specified"
     else
