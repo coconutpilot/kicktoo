@@ -46,7 +46,7 @@ EOF
 
 pre_build_kernel() {
     spawn_chroot "emerge dev-vcs/git"
-    spawn_chroot "echo PORTDIR_OVERLAY=\"/usr/local/portage\" >> /etc/make.conf"
+    spawn_chroot "echo PORTDIR_OVERLAY=\"/usr/local/portage\" >> /etc/portage/make.conf"
     spawn_chroot "mkdir -p /usr/local/portage/sys-kernel/kigen"
     spawn_chroot "wget -q https://github.com/downloads/r1k0/kigen/kigen-9999.ebuild -O /usr/local/portage/sys-kernel/kigen/kigen-9999.ebuild"
     spawn_chroot "ebuild /usr/local/portage/sys-kernel/kigen/kigen-9999.ebuild digest"

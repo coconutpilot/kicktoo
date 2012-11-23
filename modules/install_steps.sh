@@ -231,18 +231,18 @@ unpack_stage_tarball() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}"      || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}"      || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball}"                          || die "Could not remove stage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${tarball}"                           || die "Could not unxz stage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${tarball}"                         || die "Could not unlzma stage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                       || die "Could not remove stage tarball"
         fi
     # ${stage_file} is a dangerous option
     # it can screw things up if it's too big
@@ -253,18 +253,18 @@ unpack_stage_tarball() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${stage_name} -C ${chroot_dir}"   || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${stage_name} -C ${chroot_dir}"   || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${stage_name}"                       || die "Could not remove stage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${stage_name}"                        || die "Could not unxz stage tarball"
             spawn "tar xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${stage_name}"                      || die "Could not unlzma stage tarball"
             spawn "tar xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
-            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
+#            spawn "rm -f ${chroot_dir}/${stage_name%.*}"                    || die "Could not remove stage tarball"
         fi
     fi
 }
@@ -276,7 +276,7 @@ create_makeconf() {
     for var in $(set | grep ^makeconf_[A-Z])
     do
         makeconfline=$(echo $var | sed s/makeconf_// | sed s/\'/\"/g )
-        cat >> ${chroot_dir}/etc/make.conf <<- EOF
+        cat >> ${chroot_dir}/etc/portage/make.conf <<- EOF
 ${makeconfline}
 EOF
     done
@@ -363,18 +363,18 @@ unpack_repo_tree() {
 
         if [ "$extension" == "bz2" ] ; then
             spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball}"                              || die "Could not remove portage tarball"
         elif [ "$extension" == "xz" ] ; then
             spawn "unxz ${chroot_dir}/${tarball}"                               || die "Could not unxz portage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
         elif [ "$extension" == "lzma" ] ; then
             spawn "unlzma ${chroot_dir}/${tarball}"                             || die "Could not unlzma portage tarball"
             spawn "tar xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
-            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
+#            spawn "rm -f ${chroot_dir}/${tarball%.*}"                           || die "Could not remove portage tarball"
         fi
     fi
 }

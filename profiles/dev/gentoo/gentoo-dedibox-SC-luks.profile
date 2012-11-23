@@ -140,7 +140,7 @@ pre_install_kernel_builder() {
     # fetching and unmasking kigen-${kigen_version}.ebuild
     spawn_chroot "mkdir /usr/local/portage/sys-kernel/kigen -p" || die "cannot mkdir /usr/local/portage/sys-kernel/kigen"
     spawn_chroot "wget https://github.com/downloads/r1k0/kigen/kigen-${kigen_version}.ebuild -O /usr/local/portage/sys-kernel/kigen/kigen-${kigen_version}.ebuild" || die "cannot fetch kigen-${kigen_version}.ebuild"
-    spawn_chroot "echo -e PORTDIR_OVERLAY=\"/usr/local/portage\" >> /etc/make.conf" || die "cannot append PORTDIR_OVERLAY to make.conf"
+    spawn_chroot "echo -e PORTDIR_OVERLAY=\"/usr/local/portage\" >> /etc/portage/make.conf" || die "cannot append PORTDIR_OVERLAY to make.conf"
     spawn_chroot "echo sys-kernel/kigen >> /etc/portage/package.keywords" || die "cannot add keyword for kigen"
 
     spawn_chroot "ebuild /usr/local/portage/sys-kernel/kigen/kigen-${kigen_version}.ebuild digest" || die "cannot digest kigen-${kigen_version}.ebuild"
