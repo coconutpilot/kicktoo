@@ -453,9 +453,9 @@ setup_root_password() {
 
 setup_timezone() {
     if detect_baselayout2 ; then
-        spawn_chroot "sed -e 's:clock=\".*\":clock=\"${timezone}\":' /etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
-        spawn_chroot "echo \"${timezone}\" > /etc/timezone"                               || die "Could not set timezone in /etc/timezone"
-        spawn_chroot "cp /usr/share/zoneinfo/${timezone} /etc/localtime"                  || die "Could not set timezone in /etc/localtime" 
+        spawn "sed -e 's:clock=\".*\":clock=\"${timezone}\":' ${chroot_dir}/etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
+        spawn "echo \"${timezone}\" > ${chroot_dir}/etc/timezone"                               || die "Could not set timezone in /etc/timezone"
+        spawn "cp ${chroot_dir}/usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"     || die "Could not set timezone in /etc/localtime" 
     else
         if [ -e "${chroot_dir}/etc/localtime" ] ; then
             spawn "rm ${chroot_dir}/etc/localtime 2>/dev/null"
