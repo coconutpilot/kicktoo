@@ -452,37 +452,20 @@ setup_root_password() {
 }
 
 setup_timezone() {
-    if detect_baselayout2 ; then
-        spawn "sed -e 's:clock=\".*\":clock=\"${timezone}\":' ${chroot_dir}/etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
-        spawn "echo \"${timezone}\" > ${chroot_dir}/etc/timezone"                               || die "Could not set timezone in /etc/timezone"
-        spawn "cp ${chroot_dir}/usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"     || die "Could not set timezone in /etc/localtime" 
-    else
-        if [ -e "${chroot_dir}/etc/localtime" ] ; then
-            spawn "rm ${chroot_dir}/etc/localtime 2>/dev/null"
-        fi
-        spawn "ln -s ../usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"                            || die "Could not set timezone"
-        spawn "/bin/sed -i 's:#TIMEZONE=\"Factory\":TIMEZONE=\"${timezone}\":' ${chroot_dir}/etc/conf.d/clock" || die "Could not adjust TIMEZONE config in /etc/conf.d/clock"
-    fi
+    debug setup_timezone "Setting timezone: ${timezone}"
+    spawn "sed -e 's:clock=\".*\":clock=\"${timezone}\":' ${chroot_dir}/etc/conf.d/hwclock" || die "Could not adjust clock config in /etc/conf.d/hwclock"
+    spawn "echo \"${timezone}\" > ${chroot_dir}/etc/timezone"                               || die "Could not set timezone in /etc/timezone"
+    spawn "cp ${chroot_dir}/usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime"     || die "Could not set timezone in /etc/localtime" 
 }
 
 setup_keymap(){
-    if detect_baselayout2 ; then
-        debug setup_keymap "Setting keymap=${keymap} to /etc/conf.d/keymaps"
-        spawn "/bin/sed -i 's:keymap=\"us\":keymap=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "Could not adjust keymap config in /etc/conf.d/keymaps"
-    else
-        debug set_keymap "Setting KEYMAP=${keymap} to /etc/conf.d/keymaps"
-        spawn "/bin/sed -i 's:KEYMAP=\"us\":KEYMAP=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "Could not adjust KEYMAP config in /etc/conf.d/keymaps"
-    fi
+    debug setup_keymap "Setting keymap=${keymap} to /etc/conf.d/keymaps"
+    spawn "/bin/sed -i 's:keymap=\"us\":keymap=\"${keymap}\":' ${chroot_dir}/etc/conf.d/keymaps" || die "Could not adjust keymap config in /etc/conf.d/keymaps"
 }
 
 setup_host() {
-    if detect_baselayout2 ; then
-        debug setup_host "Setting hostname=${hostname} to /etc/conf.d/hostname"
-        spawn "/bin/sed -i 's:hostname=\"localhost\":hostname=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "Could not adjust hostname config in /etc/conf.d/hostname"
-    else
-        debug setup_host "Setting HOSTNAME=${hostname} to /etc/conf.d/hostname"
-        spawn "/bin/sed -i 's:HOSTNAME=\"localhost\":HOSTNAME=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "Could not adjust HOSTNAME config in /etc/conf.d/hostname"
-    fi
+    debug setup_host "Setting hostname=${hostname} to /etc/conf.d/hostname"
+    spawn "/bin/sed -i 's:hostname=\"localhost\":hostname=\"${hostname}\":' ${chroot_dir}/etc/conf.d/hostname" || die "Could not adjust hostname config in /etc/conf.d/hostname"
 }
 
 install_bootloader() {
