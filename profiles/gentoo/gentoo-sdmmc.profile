@@ -1,5 +1,10 @@
-# Kicktoo profile for Beaglebone, Pandaboard or some other creditcard-size
+# Kicktoo base profile for Beaglebone, Pandaboard or some other creditcard-size
 # computer running from an SD/MMC and requiring a specific geometry.
+#
+# Source this from a specific board profile, or expand this one.
+#
+# Because Kicktoo doesn't support cross-architecture installs and commands, you
+# have to install the kernel and others programs yourself.
 #
 # http://processors.wiki.ti.com/index.php/SD/MMC_format_for_OMAP3_boot
 
@@ -20,11 +25,8 @@ format "/dev/${DISK}p1" fat32
 format "/dev/${DISK}p2" ext3
 
 mountfs /dev/${DISK}p2 ext3 /
+mountfs /dev/${DISK}p1 vfat /boot
 
-# armv7a or armv7a_hardfp for Beagle and Pandaboard
-# armv6j or armv6j_hardfp for Raspberry Pi 
-stage_latest armv6j_hardfp
 tree_type snapshot http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
-
-# you have to set the other settings manually because
-# Kicktoo doesn't support cross architecture (yet)
+locale_set en_US.UTF-8
+timezone UTC
