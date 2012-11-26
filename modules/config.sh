@@ -83,8 +83,9 @@ format() {
     do_format=yes
     local device=$1
     local fs=$2
-    
-    local tmpformat="${device}:${fs}"
+    local options=$(echo ${3} | sed s/\ /__/g)
+   
+    local tmpformat="${device}:${fs}:${options}"
     if [ -n "${format}" ]; then
         format="${format} ${tmpformat}"
     else

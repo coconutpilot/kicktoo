@@ -109,35 +109,37 @@ format_devices() {
     for device in ${format}; do
         local devnode=$(echo ${device} | cut -d: -f1)
         local fs=$(echo ${device} | cut -d: -f2)
+        local options=$(echo ${device} | cut -d: -f3 | sed s/__/\ /g)
         local formatcmd=""
         case "${fs}" in
             swap)
-                formatcmd="mkswap ${devnode}"
+                formatcmd="mkswap ${options} ${devnode}"
                 ;;
             ext2)
-                formatcmd="mke2fs ${devnode}"
+                formatcmd="mke2fs ${options} ${devnode}"
                 ;;
             ext3)
-                formatcmd="mkfs.ext3 -j -m 1 -O dir_index,filetype,sparse_super ${devnode}"
+                # formatcmd="mkfs.ext3 -j -m 1 -O dir_index,filetype,sparse_super ${devnode}"
+                formatcmd="mkfs.ext3 -j ${options} ${devnode}"
                 ;;
             ext4)
                 # mkfs.ext4dev -j -m 1 -O dir_index,filetype,sparse_super,extents,huge_file /dev/mapper/root
-                formatcmd="mkfs.ext4 ${devnode}"
+                formatcmd="mkfs.ext4 ${options} ${devnode}"
                 ;;
             btrfs)
-                formatcmd="mkfs.btrfs ${devnode}"
+                formatcmd="mkfs.btrfs ${options} ${devnode}"
                 ;;
             xfs)
-                formatcmd="mkfs.xfs ${devnode}"
+                formatcmd="mkfs.xfs ${options} ${devnode}"
                 ;;
             reiserfs|reiserfs3)
-                formatcmd="mkreiserfs -q ${devnode}"
+                formatcmd="mkreiserfs -q ${options} ${devnode}"
                 ;;
             fat16)
-                formatcmd="mkfs.vfat -F 16 ${devnode}"
+                formatcmd="mkfs.vfat -F 16 ${options} ${devnode}"
                 ;;
             fat32)
-                formatcmd="mkfs.vfat -F 32 ${devnode}"
+                formatcmd="mkfs.vfat -F 32 ${options} ${devnode}"
                 ;;
             *)
                 formatcmd=""

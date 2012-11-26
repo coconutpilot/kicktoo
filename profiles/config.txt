@@ -85,11 +85,12 @@ luks - Sets and creates /dev/mapper/ encrypted devices
 format - Formats a partition
 
   Usage:
-    format <device> <fs>
+    format <device> <fs> [options]
 
   Parameters:
-    device - the device to format (such as /dev/hda2 or /dev/sdb4)
-    fs     - the filesystem to use (such as ext2, ext3, or swap)
+    device  - the device to format (such as /dev/hda2 or /dev/sdb4)
+    fs      - the filesystem to use (such as ext2, ext3, or swap)
+    options - the options to use (such as "-O dir_index,huge_file") 
 
 =============================
 mountfs - Mounts a filesystem

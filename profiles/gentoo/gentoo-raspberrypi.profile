@@ -7,7 +7,7 @@ post_mount_local_partitions() {
     firmware_boot_dir="https://raw.github.com/raspberrypi/firmware/master/boot"
 
     for f in "bootcode.bin" "fixup.dat" "start.elf" "fixup_cd.dat" "start_cd.elf"; do
-        spawn "curl ${firmware_boot_dir}/${f} -o ${chroot_dir}/boot/${f}"
+        fetch ${firmware_boot_dir}/${f} ${chroot_dir}/boot/${f}
     done
 
     echo "root=/dev/${DISK}p2 rootdelay=2" > ${chroot_dir}/boot/cmdline.txt

@@ -22,7 +22,7 @@ part $DISK 1 b 100M boot
 part $DISK 2 83 +
 
 format "/dev/${DISK}p1" fat32
-format "/dev/${DISK}p2" ext3
+format "/dev/${DISK}p2" ext3 "-T small"
 
 mountfs /dev/${DISK}p2 ext3 /
 mountfs /dev/${DISK}p1 vfat /boot
