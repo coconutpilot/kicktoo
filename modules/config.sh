@@ -197,12 +197,17 @@ locale_set() {
 }
 
 tree_type() {
-    do_tree=yes
     local type=$1
     local uri=$2
     
-    tree_type="${type}"
-    portage_snapshot_uri="${uri}"
+    if [ "${type}" == "packages" ]; then
+        do_packages=yes
+        portage_packages_uri="${uri}"
+    else
+        do_tree=yes
+        tree_type="${type}"
+        portage_snapshot_uri="${uri}"
+    fi
 }
 
 bootloader_install_device() {
