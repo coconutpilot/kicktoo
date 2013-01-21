@@ -175,16 +175,19 @@ stage_path - Specifies the path to the stage tarball
     path - Path to the location of the stage tarball.
 
 ==============================================================
-tree_type - Specifies the portage tree type (defaults to sync)
+tree_type - Specifies the portage tree type, including package snapshots
+(defaults to sync)
 
   Usage:
     tree_type <type> [uri]
 
   Parameters:
     type - the method for fetching the portage tree (sync, webrsync, or
-           snapshot). you can also use 'none' to skip this step
+           snapshot). you can also use 'none' to skip this step, additionally
+           only the packages type can be specified with a previous type and 
+           will fetch the portage packages directory
     uri  - URI to the location of the portage snapshot if you specified
-           'snapshot' for the type
+           'snapshot' and/or 'packages' for the type
 
 =============================================================================
 bootloader_install_device - Specifies the device to install the bootloader to

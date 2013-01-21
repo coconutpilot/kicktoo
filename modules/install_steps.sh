@@ -343,6 +343,11 @@ fetch_repo_tree() {
     else
         die "Unrecognized tree_type: ${tree_type}"
     fi
+    
+    if [ "${do_packages}" == "yes" ]; then
+		notify "Fetching package repository tree"
+    	fetch "${portage_packages_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_packages_uri})"
+    fi
 }
 
 unpack_repo_tree() {
@@ -361,6 +366,25 @@ unpack_repo_tree() {
             spawn "tar --lzma -xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
         fi
     fi
+    
+    # tarball contiains a ./packages/ snapshot from previous installs or binary host builds
+    if [ "${do_packages}" == "yes" ] && [ -n "${portage_packages_uri}" ]; then
+		debug unpack_repo_tree "extracting packages tree"
+		notify "Unpacking package repository tree"
+        tarball=$(get_filename_from_uri ${portage_packages_uri})
+        extension=${portage_packages_uri##*.}
+        
+        spawn "mkdir ${chroot_dir}/usr/portage/packages"	|| die "Could not create '/usr/portage/packages'"
+		if [ "$extension" == "bz2" ] ; then
+            spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"      || die "Could not untar portage tarball"
+        elif [ "$extension" == "gz" ] ; then
+            spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"      || die "Could not untar portage tarball"
+        elif [ "$extension" == "xz" ] ; then
+            spawn "tar Jxpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+        elif [ "$extension" == "lzma" ] ; then
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+        fi
+    fi
 }
 
 copy_kernel() {
@@ -372,18 +396,18 @@ copy_kernel() {
 }
 
 install_kernel_builder() {
-    spawn_chroot "emerge ${kernel_builder}" || die "Could not emerge ${kernel_builder}"
+    spawn_chroot "emerge --usepkg ${kernel_builder}" || die "Could not emerge ${kernel_builder}"
 }
 
 install_initramfs_builder() {
     # initramfs builder could already be installed by install_kernel_builder
     if [ -z $(spawn_chroot "command -v ${initramfs_builder}") ]; then
-        spawn_chroot "emerge ${initramfs_builder}" || die "Could not emerge ${initramfs_builder}"
+        spawn_chroot "emerge --usepkg ${initramfs_builder}" || die "Could not emerge ${initramfs_builder}"
     fi
 }
 
 build_kernel() {
-    spawn_chroot "emerge ${kernel_sources}" || die "Could not emerge kernel sources"
+    spawn_chroot "emerge --usepkg ${kernel_sources}" || die "Could not emerge kernel sources"
 
     # use genkernel
     if [ "${kernel_builder}" == "genkernel" ]; then
@@ -465,7 +489,7 @@ setup_host() {
 }
 
 install_bootloader() {
-    spawn_chroot "emerge ${bootloader}" || die "Could not emerge bootloader"
+    spawn_chroot "emerge --usepkg ${bootloader}" || die "Could not emerge bootloader"
 }
 
 configure_bootloader() {
@@ -485,7 +509,7 @@ install_extra_packages() {
         local o
         for o in ${extra_packages}
         do
-            spawn_chroot "emerge ${o}" || die "Could not emerge extra packages"
+            spawn_chroot "emerge --usepkg ${o}" || die "Could not emerge extra packages"
         done
     fi
 }
