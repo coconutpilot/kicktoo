@@ -19,5 +19,3 @@
   use gdisk instead of fdisk 
   http://www.funtoo.org/wiki/Funtoo_Linux_Installation#Prepare_Hard_Disk
   This should solve https://github.com/r1k0/kicktoo/issues/26
-- I saw somewhere there's an option for tar to extract tar.xz, find it and replace 
-- check if the same exists for lzma too
