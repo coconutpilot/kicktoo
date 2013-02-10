@@ -9,8 +9,6 @@
   SETUP="" is default
   SETUP="luks" is luks
   SETUP="luks lvm" is luks+lvm
-  take care of vgchange warning using this
-  if is_setup "lvm" return 0 then call lvm_cleanup
 - funtoo boot
   * sys-apps/gptfdisk
       Available versions:  0.8.4 (~)0.8.5 {{KERNEL="linux"}}

@@ -547,20 +547,26 @@ run_post_install_script() {
 cleanup() {
     if [ -f "/proc/mounts" ]; then
         for mnt in $(awk '{ print $2; }' /proc/mounts | grep ^${chroot_dir} | sort -r); do
-            spawn "umount ${mnt}" || warn "  Could not unmount ${mnt}"
+            spawn "umount ${mnt}" || warn "Could not unmount ${mnt}"
             sleep 0.3
         done
     fi
     for swap in $(echo ${swapoffs}); do
-        spawn "swapoff ${swap} 2>/dev/null" || warn "  Could not deactivate swap on ${swap}"
+        spawn "swapoff ${swap} 2>/dev/null" || warn "Could not deactivate swap on ${swap}"
     done
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
         spawn "mdadm --manage --stop /dev/${array}" || die "Could not stop mdraid array ${array}"
     done
     if [ -d "/dev/mapper" ]; then
         # NOTE let lvm cleanup before luks 
-        spawn "vgchange -a n vg 2>/dev/null" || warn "Could not run vgchange -a n vg"
+	
+        for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
+            sleep 0.3
+            spawn "vgchange -a n ${volgroup}" 
+        done
+
         sleep 0.3
+
         for luksdev in $(ls /dev/mapper | grep -v control); do
             spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
             sleep 0.3
