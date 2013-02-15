@@ -546,7 +546,7 @@ run_post_install_script() {
 
 cleanup() {
     if [ -f "/proc/mounts" ]; then
-        for mnt in $(awk '{ print $2; }' /proc/mounts | grep ^${chroot_dir} | sort -r); do
+        for mnt in $(awk '{ print $2; }' /proc/mounts | grep ^${chroot_dir} | sort -ur); do
             spawn "umount ${mnt}" || warn "Could not unmount ${mnt}"
             sleep 0.3
         done
