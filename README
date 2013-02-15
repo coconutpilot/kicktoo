@@ -2,7 +2,7 @@
 # Install kicktoo
 #################
 
-Kicktoo is meant to automate the manual steps required to build any working Portage based distro.
+Kicktoo is meant to automate the manual steps required to build any Portage based distro.
 
 1) Download an official Gentoo livedvd (though you may use other livecds):
    http://distfiles.gentoo.org/releases/
