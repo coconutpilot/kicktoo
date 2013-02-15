@@ -548,25 +548,24 @@ cleanup() {
     if [ -f "/proc/mounts" ]; then
         for mnt in $(awk '{ print $2; }' /proc/mounts | grep ^${chroot_dir} | sort -ur); do
             spawn "umount ${mnt}" || warn "Could not unmount ${mnt}"
-            sleep 0.3
+            sleep 0.2
         done
     fi
     for swap in $(echo ${swapoffs}); do
         spawn "swapoff ${swap}" || warn "Could not deactivate swap on ${swap}"
     done; unset swapoffs # when 'trap cleanup' is caught, cleanup's called twice
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
-        spawn "mdadm --manage --stop /dev/${array}" || die "Could not stop mdraid array ${array}"
+        spawn "mdadm --manage --stop /dev/${array}" || warn "Could not stop mdraid array ${array}"
     done
     # NOTE let lvm cleanup before luks 
     for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
         spawn "vgchange -a n ${volgroup}"  || warn "Could not remove vg ${volgroup}"
-        sleep 0.3
+        sleep 0.2
     done
-    # FIXME parse luksdev from $(set | grep ^luks ...
-    # this will fix the lvm profile from unluksing lvm device
-    for luksdev in $(ls /dev/mapper | grep -v control); do
+    for luksdev in $(set | grep '^luks=' | cut -d= -f2); do
+        luksdev=$(echo ${luksdev} | cut -d: -f2)
         spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
-        sleep 0.3
+        sleep 0.2
     done
 }
 
