@@ -15,13 +15,9 @@ mountfs /dev/mapper/swap swap
 mountfs /dev/mapper/root ext4 / noatime
 
 # retrieve latest autobuild stage version for stage_uri
-if [ "${arch}" == "x86" ]; then
-    wget -q http://distfiles.gentoo.org/releases/${arch}/autobuilds/latest-stage3-$(uname -m).txt -O /tmp/stage3.version
-elif [ "${arch}" == "amd64" ]; then
-    wget -q http://distfiles.gentoo.org/releases/${arch}/autobuilds/latest-stage3-${arch}.txt -O /tmp/stage3.version
-fi
+[ "${arch}" == "x86" ]   && wget -q http://distfiles.gentoo.org/releases/${arch}/autobuilds/latest-stage3-$(uname -m).txt -O /tmp/stage3.version
+[ "${arch}" == "amd64" ] && wget -q http://distfiles.gentoo.org/releases/${arch}/autobuilds/latest-stage3-${arch}.txt -O /tmp/stage3.version
 latest_stage_version=$(cat /tmp/stage3.version | grep tar.bz2)
-
 stage_uri               http://distfiles.gentoo.org/releases/${arch}/autobuilds/${latest_stage_version}
 tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
 
@@ -139,8 +135,12 @@ extra_packages          dhcpcd # openssh syslog-ng
 # pre_unpack_repo_tree() {
 # }
 # skip unpack_repo_tree
-# post_unpack_repo_tree() {
-# }
+post_unpack_repo_tree() {
+    # this makes sure we use the newest profile
+    # we end up doing this because the 13.0 profile link
+    # is not yet propagated into the stage tarball
+    spawn_chroot "eselect profile set default/linux/${arch}/13.0"
+}
 
 # pre_copy_kernel() {
 # }
