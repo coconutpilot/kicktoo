@@ -127,8 +127,12 @@ extra_packages          dhcpcd syslog-ng vim # openssh
 # pre_unpack_repo_tree() {
 # }
 # skip unpack_repo_tree
-# post_unpack_repo_tree() {
-# }
+post_unpack_repo_tree() {
+    # this makes sure we use the newest profile
+    # we end up doing this because the 13.0 profile link
+    # is not yet into the stage tarball
+    spawn_chroot "eselect profile set default/linux/${arch}/13.0"
+}
 
 # pre_copy_kernel() {
 # }
