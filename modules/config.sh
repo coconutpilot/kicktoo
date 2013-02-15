@@ -28,6 +28,25 @@ part() {
     debug part "${drive_temp} is now: $(eval echo \${${drive_temp}})"
 }
 
+gptpart() {
+    do_part=yes
+    local drive=$1
+    local minor=$2
+    local type=$3
+    local size=$4
+    local bootable=$5
+
+    drive=$(echo ${drive} | sed -e 's:^/dev/::' -e 's:/:_:g')
+    local drive_temp="gptpartitions_${drive}"
+    local tmppart="${minor}:${type}:${size}:${bootable}"
+    if [ -n "$(eval echo \${${drive_temp}})" ]; then
+        eval "${drive_temp}=\"$(eval echo \${${drive_temp}}) ${tmppart}\""
+    else
+        eval "${drive_temp}=\"${tmppart}\""
+    fi
+    debug part "${drive_temp} is now: $(eval echo \${${drive_temp}})"
+}
+
 mdraid() {
     do_raid=yes
     local array=$1

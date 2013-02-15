@@ -24,7 +24,7 @@ get_num_primary() {
 
 add_partition() {
     local device=$1
-    local minor=$2		# still present for compatibility with partition_sparc64
+    local minor=$2  # still present for compatibility with partition_sparc64
     local size=$3
     local type=$4
     local bootable=$5
