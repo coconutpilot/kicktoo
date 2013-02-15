@@ -552,8 +552,8 @@ cleanup() {
         done
     fi
     for swap in $(echo ${swapoffs}); do
-        spawn "swapoff ${swap} 2>/dev/null" || warn "Could not deactivate swap on ${swap}"
-    done
+        spawn "swapoff ${swap}" || warn "Could not deactivate swap on ${swap}"
+    done; unset swapoffs # when 'trap cleanup' is caught, cleanup's called twice
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
         spawn "mdadm --manage --stop /dev/${array}" || die "Could not stop mdraid array ${array}"
     done
