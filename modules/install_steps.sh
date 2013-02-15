@@ -564,9 +564,7 @@ cleanup() {
             sleep 0.3
         done
         for luksdev in $(ls /dev/mapper | grep -v control); do
-            # TODO if cryptsetup isLuks ${luksdev} then
-                spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
-            # fi
+            spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
             sleep 0.3
         done
     fi
