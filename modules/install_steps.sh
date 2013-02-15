@@ -559,14 +559,14 @@ cleanup() {
     done
     if [ -d "/dev/mapper" ]; then
         # NOTE let lvm cleanup before luks 
-	
         for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
-            spawn "vgchange -a n ${volgroup}" 
+            spawn "vgchange -a n ${volgroup}"  || warn "Could not remove vg ${volgroup}"
             sleep 0.3
         done
-
         for luksdev in $(ls /dev/mapper | grep -v control); do
-            spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
+            # TODO if cryptsetup isLuks ${luksdev} then
+                spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
+            # fi
             sleep 0.3
         done
     fi
