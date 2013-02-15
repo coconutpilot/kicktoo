@@ -130,7 +130,7 @@ extra_packages          dhcpcd syslog-ng vim # openssh
 post_unpack_repo_tree() {
     # this makes sure we use the newest profile
     # we end up doing this because the 13.0 profile link
-    # is not yet into the stage tarball
+    # is not yet propagated into the stage tarball
     spawn_chroot "eselect profile set default/linux/${arch}/13.0"
 }
 
