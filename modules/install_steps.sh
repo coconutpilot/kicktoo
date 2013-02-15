@@ -42,9 +42,8 @@ partition() {
         done
         
         if [ "$(get_arch)" != "sparc64" ]; then
-        	# writing added partitions to device
-            sfdisk_command "${device}" && sleep 1 || die "Could not write partitions ${partitions} to device ${device}"
-        
+            # writing added partitions to device
+            sfdisk_command "${device}" && sleep 1 || die "Could not write partitions ${partitions} to device ${device}"        
             # clear partitions for next device
             partitions=""
         fi
