@@ -553,7 +553,7 @@ cleanup() {
     fi
     for swap in $(echo ${swapoffs}); do
         spawn "swapoff ${swap}" || warn "Could not deactivate swap on ${swap}"
-    done; unset swapoffs # when 'trap cleanup' is caught, cleanup's called twice
+    done; unset swapoffs # when 'trap cleanup' is caught, failure_cleanup is called twice
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
         spawn "mdadm --manage --stop /dev/${array}" || warn "Could not stop mdraid array ${array}"
     done
@@ -574,17 +574,11 @@ starting_cleanup() {
 }
 
 finishing_cleanup() {
-    if [ -f ${logfile} ] && [ -d ${chroot_dir} ]; then
-        spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "Could not copy install logfile into chroot"
-    fi
-
+    [ -f ${logfile} ] && [ -d ${chroot_dir} ] && spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "Could not copy install logfile into chroot"
     cleanup
 }
 
 failure_cleanup() {
-    if [ -f ${logfile} ]; then
-        spawn "mv ${logfile} ${logfile}.failed" || warn "Could not move ${logfile} to ${logfile}.failed"
-    fi
-
+    [ -f ${logfile} ] && spawn "mv ${logfile} ${logfile}.failed" || warn "Could not move ${logfile} to ${logfile}.failed"
     cleanup
 }
