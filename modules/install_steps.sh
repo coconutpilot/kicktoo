@@ -557,17 +557,17 @@ cleanup() {
     for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
         spawn "mdadm --manage --stop /dev/${array}" || die "Could not stop mdraid array ${array}"
     done
-    if [ -d "/dev/mapper" ]; then
-        # NOTE let lvm cleanup before luks 
-        for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
-            spawn "vgchange -a n ${volgroup}"  || warn "Could not remove vg ${volgroup}"
-            sleep 0.3
-        done
-        for luksdev in $(ls /dev/mapper | grep -v control); do
-            spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
-            sleep 0.3
-        done
-    fi
+    # NOTE let lvm cleanup before luks 
+    for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
+        spawn "vgchange -a n ${volgroup}"  || warn "Could not remove vg ${volgroup}"
+        sleep 0.3
+    done
+    # FIXME parse luksdev from $(set | grep ^luks ...
+    # this will fix the lvm profile from unluksing lvm device
+    for luksdev in $(ls /dev/mapper | grep -v control); do
+        spawn "cryptsetup remove ${luksdev}" || warn "Could not remove luks device /dev/mapper/${luksdev}"
+        sleep 0.3
+    done
 }
 
 starting_cleanup() {
