@@ -236,9 +236,9 @@ unpack_stage_tarball() {
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}"      || die "Could not untar stage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}"    || die "Could not untar stage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}"    || die "Could not untar stage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}"    || die "Could not untar stage tarball"
         fi
     # ${stage_file} is a dangerous option
     # it can screw things up if it's too big
@@ -252,9 +252,9 @@ unpack_stage_tarball() {
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${stage_name} -C ${chroot_dir}"   || die "Could not untar stage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${stage_name} -C ${chroot_dir}" || die "Could not untar stage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${stage_name%.*} -C ${chroot_dir}" || die "Could not untar stage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${stage_name} -C ${chroot_dir}" || die "Could not untar stage tarball"
         fi
     fi
 }
@@ -361,9 +361,9 @@ unpack_repo_tree() {
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
         fi
     fi
     
@@ -380,9 +380,9 @@ unpack_repo_tree() {
         elif [ "$extension" == "gz" ] ; then
             spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"      || die "Could not untar portage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${tarball%.*} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
         fi
     fi
 }
