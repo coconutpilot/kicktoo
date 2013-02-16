@@ -110,8 +110,7 @@ setup_lvm() {
 }
 
 luks_devices(){
-    for device in ${luks}
-    do
+    for device in ${luks}; do
         local devicetmp=$(echo ${device}    | cut -d: -f1)
         local luks_mapper=$(echo ${device}  | cut -d: -f2)
         local cipher=$(echo ${device}       | cut -d: -f3)
@@ -173,7 +172,7 @@ format_devices() {
                 warn "don't know how to format ${devnode} as ${fs}"
         esac
         if [ -n "${formatcmd}" ]; then
-            sleep 0.1 # this helps not breaking formatting
+            sleep 0.1 # this helps not breaking formatting on VMs
             spawn "${formatcmd}" || die "Could not format ${devnode} with command: ${formatcmd}"
         fi
     done
@@ -233,7 +232,7 @@ mount_network_shares() {
 }
 
 # FIXME think of a way of supporting other URLs so that it works for a funtoo profile too
-# sounds like kicktoo will have to know what distro it's building (if funtoo use this url if gentoo uses this other..)
+# sounds like kicktoo will have to know what distro it's building?
 get_latest_stage_uri() {
     debug get_latest_stage_uri "getting latest stage uri"
     if [ -n "${stage_arch}" ]; then
@@ -396,7 +395,7 @@ unpack_repo_tree() {
         fi
     fi
     
-    # tarball contiains a ./packages/ snapshot from previous installs or binary host builds
+    # tarball contains a ./packages/ snapshot from previous installs or binary host builds
     if [ "${do_packages}" == "yes" ] && [ -n "${portage_packages_uri}" ]; then
 		debug unpack_repo_tree "extracting packages tree"
 		notify "Unpacking package repository tree"
@@ -418,10 +417,9 @@ unpack_repo_tree() {
 
 copy_kernel() {
     spawn_chroot "mount /boot"
-    # let cp fail if files are not there
     cp "${kernel_binary}"    "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
-    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
-    cp "${systemmap_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
+    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled initramfs to ${chroot_dir}/boot"
+    cp "${systemmap_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled System.map to ${chroot_dir}/boot"
 }
 
 install_kernel_builder() {
@@ -429,7 +427,7 @@ install_kernel_builder() {
 }
 
 install_initramfs_builder() {
-    # initramfs builder could already be installed by install_kernel_builder
+    # initramfs builder might already be installed by install_kernel_builder
     if [ -z $(spawn_chroot "command -v ${initramfs_builder}") ]; then
         spawn_chroot "emerge --usepkg ${initramfs_builder}" || die "Could not emerge ${initramfs_builder}"
     fi
@@ -438,7 +436,6 @@ install_initramfs_builder() {
 build_kernel() {
     spawn_chroot "emerge --usepkg ${kernel_sources}" || die "Could not emerge kernel sources"
 
-    # use genkernel
     if [ "${kernel_builder}" == "genkernel" ]; then
         if [ -n "${kernel_config_uri}" ]; then
             fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                       || die "Could not fetch kernel config"
@@ -449,7 +446,6 @@ build_kernel() {
         else
             spawn_chroot "genkernel ${genkernel_opts} kernel"                              || die "Could not build generic kernel"
         fi
-    # use kigen 
     elif [ "${kernel_builder}" == "kigen" ]; then
         if [ -n "${kernel_config_uri}" ]; then
             fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig"                  || die "Could not fetch kernel config"
