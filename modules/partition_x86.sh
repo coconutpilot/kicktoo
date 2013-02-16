@@ -1,10 +1,12 @@
-#create_disklabel() {
-#    local device=$1
-#    
-#    debug create_disklabel "creating new msdos disklabel"
+create_disklabel() {
+    local device=$1
+    
+    debug create_disklabel "creating new msdos disklabel"
+# fdisk won't convert back from GTP
 #    fdisk_command ${device} "o"
-#    return $?
-#}
+    spawn "parted ${device} --script -- mklabel msdos"
+    return $?
+}
 
 get_num_primary() {
     local device=$1

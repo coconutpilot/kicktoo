@@ -17,8 +17,7 @@ partition() {
         local device_temp="partitions_${device}"
         local device="/dev/$(echo "${device}" | sed  -e 's:_:/:g')"
         local device_size="$(get_device_size_in_mb ${device})"
-        spawn "parted ${device} --script -- mklabel msdos" || die "Could not mklabel msdos for device ${device}"
-#        create_disklabel ${device} || die "Could not create disklabel for device ${device}"
+        create_disklabel ${device} || die "Could not create disklabel for device ${device}"
         for partition in $(eval echo \${${device_temp}}); do
             debug partition "partition is ${partition}"
             local minor=$(echo ${partition}    | cut -d: -f1)
