@@ -1,10 +1,10 @@
-create_disklabel() {
-    local device=$1
-    
-    debug create_disklabel "creating new msdos disklabel"
-    fdisk_command ${device} "o"
-    return $?
-}
+#create_disklabel() {
+#    local device=$1
+#    
+#    debug create_disklabel "creating new msdos disklabel"
+#    fdisk_command ${device} "o"
+#    return $?
+#}
 
 get_num_primary() {
     local device=$1
