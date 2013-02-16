@@ -9,8 +9,8 @@ format /dev/sda2 ext4
 mountfs /dev/sda1 ext2 /boot
 mountfs /dev/sda2 ext4 / noatime
 
-stage_uri  http://dev.exherbo.org/stages/exherbo-x86-current.tar.xz
-rootpw     a
+stage_uri http://dev.exherbo.org/stages/exherbo-x86-current.tar.xz
+rootpw    a
 
 pre_setup_fstab(){
 #    spawn_chroot "cave sync"                                                                                            || die "could not sync exheres tree"
