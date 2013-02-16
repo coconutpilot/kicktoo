@@ -7,4 +7,4 @@
 - make a gentoo-luks-lvm.profile
 - test adding parted /dev/$i --script -- mklabel msdos
   before a classic partitioning to make sure an eventual previous GPT setup is removed
-- fix inability to pre/post-hook to a skipped function
+- fix inability to pre/post-hook to a skipped function - yeah that's really annoying and makes no fscking sense!!!
