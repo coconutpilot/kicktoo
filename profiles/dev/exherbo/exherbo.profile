@@ -20,11 +20,11 @@ pre_setup_fstab(){
     spawn_chroot "tar xfj /usr/src/linux-${KV}.tar.bz2 -C /usr/src/"                                                    || die "could not untar kernel tarball"
     spawn_chroot "ln -sf /usr/src/linux-${KV} /usr/src/linux"                                                           || die "could not symlink source"
     # get kernel dotconfig from running kernel
-    spawn "cat /proc/config.gz | gzip -d > ${chroot_dir}/usr/src/linux/.config"                                         || die "could not copy kernel config"
+    spawn_chroot "cat /proc/config.gz | gzip -d > /usr/src/linux/.config"                                               || die "could not copy kernel config"
     spawn_chroot "cd /usr/src/linux && yes '' |  make -s oldconfig && make && make modules_install"                     || die "could not build the kernel"
     spawn_chroot "mount /boot"
     spawn_chroot "cp /usr/src/linux/arch/${arch}/boot/bzImage /boot/kernel-genkernel-${arch}-${KV}"                     || die "could not copy the kernel"
-    spawn "echo exherbo > ${chroot_dir}/etc/hostname"                                                                   || die "could not create /etc/hostname"
+    spawn_chroot "echo exherbo > /etc/hostname"                                                                         || die "could not create /etc/hostname"
     for p in ${extra_packages}; do
         spawn_chroot "cave resolve ${p}"                                                                                || die "could not install extra packages"
     done
