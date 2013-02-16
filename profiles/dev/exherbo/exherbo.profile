@@ -10,46 +10,38 @@ mountfs /dev/sda1 ext2 /boot
 mountfs /dev/sda2 ext4 / noatime
 
 stage_uri         http://dev.exherbo.org/stages/exherbo-x86-current.tar.xz
-kernel_config_uri http://www.openchill.org/kconfig.2.6.30
 rootpw            a
 bootloader        grub
 keymap            be-latin1 # en 
-hostname          exherbo
+#hostname          exherbo
 
 pre_setup_fstab(){
-    # rewrite install_repo_tree
-    spawn_chroot "cave sync" || die "could not sync exheres tree"
-    spawn_chroot "cave resolve world -cx" || die "could not update world"
-    spawn_chroot "cave resolve -x sys-apps/systemd" || die "could not install systemd"
+#    # rewrite install_repo_tree
+#    spawn_chroot "cave sync"                        || die "could not sync exheres tree"
+#    spawn_chroot "cave resolve world -cx"           || warn "could not update world"
+#    spawn_chroot "cave resolve -x sys-apps/systemd" || die "could not install systemd"
 }
 post_setup_fstab() {
     fetch "http://www.kernel.org/pub/linux/kernel/v3.x/linux-${KV}.tar.bz2" "${chroot_dir}/usr/src/linux-${KV}.tar.bz2" || die "could not fetch kernel source"
     spawn_chroot "tar xfj /usr/src/linux-${KV}.tar.bz2 -C /usr/src/" || die "could not untar kernel tarball"
-    spawn_chroot "ln -sf //usr/src/linux-${KV} /usr/src/linux" || die "could not symlink source"
+    spawn_chroot "ln -sf /usr/src/linux-${KV} /usr/src/linux"        || die "could not symlink source"
     
     # get kernel dotconfig from running kernel
-    cat /proc/config.gz | gzip -d > /dotconfig
-    # get rid of Gentoo official firmware .config..
-    grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-    # ..and lzo compression
-    grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-#    kernel_config_file /dotconfig
-#    kernel_sources gentoo-sources
-#    genkernel_opts --loglevel=5 
-    
+    cat /proc/config.gz | gzip -d > /mnt/chroot/usr/src/linux/.config
+}
+skip install_kernel_builder
+skip install_initramfs_builder
+pre_build_kernel() {
     spawn_chroot "cd /usr/src/linux && yes '' |  make -s oldconfig && make && make modules_install" || die "could not build the kernel"
     spawn_chroot "mount /boot"
     spawn_chroot "cp /usr/src/linux/arch/${arch}/boot/bzImage /boot/kernel-genkernel-${arch}-${KV}" || die "could not copy the kernel"
 }
 skip build_kernel
+skip setup_host
 skip install_bootloader
-pre_configure_bootloader(){
-    spawn_chroot "paludis -i ${bootloader}" || die "could not install bootloader"
-}
 post_configure_bootloader(){
-    for p in ${extra_packages}
-        do
-        spawn_chroot "paludis -i ${p}" || die "could not install extra packages"
+    for p in ${extra_packages}; do
+        spawn_chroot "cave resolve ${p}" || die "could not install extra packages"
     done
 }
 skip install_extra_packages
