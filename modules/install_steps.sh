@@ -50,6 +50,7 @@ partition() {
     done
 
     # GPT partitioning
+    # http://www.funtoo.org/wiki/Funtoo_Linux_Installation#Prepare_Hard_Disk
     for device in $(set | grep '^gptpartitions_' | cut -d= -f1 | sed -e 's:^gptpartitions_::'); do
         debug partition "device is ${device}"
         local device_temp="gptpartitions_${device}"
@@ -65,31 +66,13 @@ partition() {
             local bootable=$(echo ${partition} | cut -d: -f4)
             local devnode=$(format_devnode "${device}" "${minor}")
             debug partition "devnode is ${devnode}"
-#            if [ "${type}" = "5" ] || [ "${type}" = "85" ]; then
-#                newsize="${device_size}"
-#                inputsize=""
-#            else
-#                size_devicesize="$(human_size_to_mb ${size} ${device_size})"
-#                newsize="$(echo ${size_devicesize} | cut -d '|' -f1)"
-#                [ "${newsize}" = "-1" ] && die "Could not translate size '${size}' to a usable value"
-#                device_size="$(echo ${size_devicesize} | cut -d '|' -f2)"
-#                inputsize="${newsize}"
-#            fi
-            [ -n "${bootable}" ] && bootable="*"
+            # FIXME check if the boot option is even possible for sgdisk
+	    [ -n "${bootable}" ] && bootable="*"
 
-#            add_partition "${device}" "${minor}" "${inputsize}" "${type}" "${bootable}" || die "Could not add partition ${minor} to device ${device}"
-#	    echo "$device $minor $inputsize $type $bootable\n"
             [ "${size}" == "+" ] && size= # a single + is enough
 	    spawn "sgdisk -g -n ${minor}::+${size} -t ${minor}:${type} ${device}" || die "Could not add GPT partition ${minor} to ${device}"
-#	    spawn "partprobe"
+#	    spawn "partprobe" || die "Could not partprobe"
         done
-
-#        if [ "$(get_arch)" != "sparc64" ]; then
-#            # writing added partitions to device
-#            sgdisk_command "${device}" && sleep 1 || die "Could not write partitions ${partitions} to device ${device}"
-#            # clear partitions for next device
-#            partitions=""
-#        fi
     done
 }
 
