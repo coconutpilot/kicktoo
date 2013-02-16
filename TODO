@@ -5,6 +5,6 @@
 - add LiLo boot support (default will always stay GRUB)
 - add swap partition as extended by default instead of primary (this would allow gentoo-lvm.profile and another system to dual boot)
 - make a gentoo-luks-lvm.profile
-- test if adding parted /dev/$i --script -- mklabel msdos
+- test adding parted /dev/$i --script -- mklabel msdos
   before a classic partitioning to make sure an eventual previous GPT setup is removed
 - fix inability to pre/post-hook to a skipped function
