@@ -1,20 +1,18 @@
-part sda 1 83 100M
-part sda 2 82 4096M
-part sda 3 83 +
+gptpart sda 1 8300 100M
+gptpart sda 2 ef02 32M # for GPT/GUID only
+gptpart sda 3 8200 2048M
+gptpart sda 4 8300 +
 
 format /dev/sda1 ext2
-format /dev/sda2 swap
-format /dev/sda3 ext4
+format /dev/sda3 swap
+format /dev/sda4 ext4
 
 mountfs /dev/sda1 ext2 /boot
-mountfs /dev/sda2 swap
-mountfs /dev/sda3 ext4 / noatime
+mountfs /dev/sda3 swap
+mountfs /dev/sda4 ext4 / noatime
 
-if [ "${arch}" == "x86" ]; then
-    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
-elif [ "${arch}" == "amd64" ]; then
-    stage_uri               http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-latest.tar.xz
-fi
+[ "${arch}" == "x86" ]   && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
+[ "${arch}" == "amd64" ] && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-latest.tar.xz
 tree_type     snapshot  http://ftp.osuosl.org/pub/funtoo/funtoo-stable/snapshots/portage-latest.tar.xz
 
 # compile kernel from sources using the right .config
