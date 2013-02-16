@@ -17,7 +17,8 @@ partition() {
         local device_temp="partitions_${device}"
         local device="/dev/$(echo "${device}" | sed  -e 's:_:/:g')"
         local device_size="$(get_device_size_in_mb ${device})"
-        create_disklabel ${device} || die "Could not create disklabel for device ${device}"
+        spawn "parted ${device} --script -- mklabel msdos" || die "Could not mklabel msdos for device ${device}"
+#        create_disklabel ${device} || die "Could not create disklabel for device ${device}"
         for partition in $(eval echo \${${device_temp}}); do
             debug partition "partition is ${partition}"
             local minor=$(echo ${partition}    | cut -d: -f1)
@@ -231,6 +232,8 @@ mount_network_shares() {
     fi
 }
 
+# FIXME think of a way of supporting other URLs so that it works for a funtoo profile too
+# sounds like kicktoo will have to know what distro it's building (if funtoo use this url if gentoo uses this other..)
 get_latest_stage_uri() {
     debug get_latest_stage_uri "getting latest stage uri"
     if [ -n "${stage_arch}" ]; then

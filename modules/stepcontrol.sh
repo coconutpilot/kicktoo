@@ -2,7 +2,9 @@ isafunc() {
     local func=$1
 
     declare -f ${func} > /dev/null
-    return $?
+    local exitcode=$?
+    debug isafunc "declare -f ${func} with exitcode $exitcode"
+    return $exitcode
 }
 
 runstep() {

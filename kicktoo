@@ -141,6 +141,7 @@ done
 # check for required programs on livecd
 for a in bash       \
         curl        \
+        parted      \
         sfdisk      \
         fdisk       \
         grep        \
