@@ -178,7 +178,7 @@ stage_latest() {
 
     stage_arch="${arch}"
 
-	# setting mainarch for autobuild release dir
+    # setting mainarch for autobuild release dir
     case "${arch}" in
         i486|i686)
             stage_mainarch="x86" ;;
@@ -199,7 +199,7 @@ stage_uri() {
 stage_file() {
     local file=$1
 
-   	stage_file="${file}"
+    stage_file="${file}"
 }
 
 makeconf_line() {
@@ -211,8 +211,8 @@ makeconf_line() {
 }
 
 locale_set() {
- 	do_locale=yes
-	locales=$1
+    do_locale=yes
+    locales=$1
 }
 
 tree_type() {
