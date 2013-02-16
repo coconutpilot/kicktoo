@@ -51,6 +51,7 @@ partition() {
 
     # GPT partitioning
     # http://www.funtoo.org/wiki/Funtoo_Linux_Installation#Prepare_Hard_Disk
+    # convert back to MBR: parted /dev/$i --script -- mklabel msdos
     for device in $(set | grep '^gptpartitions_' | cut -d= -f1 | sed -e 's:^gptpartitions_::'); do
         debug partition "device is ${device}"
         local device_temp="gptpartitions_${device}"
