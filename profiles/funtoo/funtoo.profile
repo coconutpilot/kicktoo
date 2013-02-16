@@ -1,5 +1,5 @@
 gptpart sda 1 8300 100M
-gptpart sda 2 ef02 32M
+gptpart sda 2 ef02 32M # for GPT/GUID only
 gptpart sda 3 8200 2048M
 gptpart sda 4 8300 +
 
