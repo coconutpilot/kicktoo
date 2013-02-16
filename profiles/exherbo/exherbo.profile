@@ -23,7 +23,7 @@ pre_setup_fstab(){
     spawn_chroot "cave fix-cache"                                                                                       || die "could not sync exheres tree"
 
     spawn_chroot "echo \"*/* systemd\" >> /etc/paludis/options.conf"                                                    || die "could not copy systemd config"
-    spawn_chroot "cave resolve world -cx"                                                                               || warn "could not update world"
+    spawn_chroot "cave resolve world -x"                                                                                || warn "could not update world"
     spawn_chroot "cave resolve -x systemd"                                                                              || die "could not install systemd"
 
     # compile kernel

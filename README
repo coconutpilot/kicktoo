@@ -60,4 +60,5 @@ gentoo/
 funtoo/
 |-- funtoo-dedibox-SC.profile
 `-- funtoo.profile
-
+exherbo/
+`-- exherbo.profile
