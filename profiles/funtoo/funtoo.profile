@@ -4,12 +4,12 @@ gptpart sda 3 8200 2048M
 gptpart sda 4 8300 +
 
 format /dev/sda1 ext2
-format /dev/sda2 swap
-format /dev/sda3 ext4
+format /dev/sda3 swap
+format /dev/sda4 ext4
 
 mountfs /dev/sda1 ext2 /boot
-mountfs /dev/sda2 swap
-mountfs /dev/sda3 ext4 / noatime
+mountfs /dev/sda3 swap
+mountfs /dev/sda4 ext4 / noatime
 
 [ "${arch}" == "x86" ]   && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
 [ "${arch}" == "amd64" ] && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-latest.tar.xz
