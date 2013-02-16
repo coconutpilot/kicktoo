@@ -34,18 +34,16 @@ part - Creates a partition
 gptpart - Creates a GPT partition
 
   Usage:
-    part <drive> <minor> <type> [size] [boot]
+    part <drive> <minor> <type> [size]
 
   Parameters:
     drive - the drive to add this partition (such as hda, sdb, etc.)
     minor - the partition number. these should be in order
-    type  - the partition type used in fdisk (such as 82 or 83) or 5 for extended
+    type  - the partition type used in sgdisk (such as 8200 or 8300)
     size  - the size of the partition (such as 32MB or 15GB, whole numbers
             only), '+' for remaining space, or 'n%' for percentage of remaining
             (these should only be used after all specific partition sizes are
             specified), leave blank for "extended"
-    boot  - whether this partition is bootable; set to "boot" if the partition
-            should be bootable, leave blank for non-bootable
 
 =================================
 mdraid - Creates an md raid array

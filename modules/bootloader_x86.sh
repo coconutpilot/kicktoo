@@ -1,6 +1,6 @@
 configure_bootloader_grub() {
     debug configure_bootloader_grub "configuring /boot/grub/grub.conf"
-    # we are likely using grub-0.97 < 1.xx
+    # we are likely using grub-0.xx
     echo -e "default 0\ntimeout 5\n" > ${chroot_dir}/boot/grub/grub.conf
     local boot_root="$(get_boot_and_root)"
     local boot="$(echo ${boot_root} | cut -d '|' -f1)"
@@ -12,7 +12,6 @@ configure_bootloader_grub() {
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
-#        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
         local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
         echo "title=${distro} Linux ${kv}" >> ${chroot_dir}/boot/grub/grub.conf
         local grub_device="$(map_device_to_grub_device ${boot_device})"
@@ -41,7 +40,7 @@ configure_bootloader_grub() {
 
 configure_bootloader_grub2() {
     debug configure_bootloader_grub2 "configuring /boot/grub/grub.cfg"
-    # we are likely using =< grub-1.96 > 1.xx
+    # we are likely using grub2
     echo -e "set default=0\nset timeout=5\n" > ${chroot_dir}/boot/grub/grub.cfg
     local boot_root="$(get_boot_and_root)"
     local boot="$(echo ${boot_root} | cut -d '|' -f1)"
@@ -53,7 +52,6 @@ configure_bootloader_grub2() {
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
-#        local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
         local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
         echo "menuentry \"${distro} Linux ${kv}\" {" >> ${chroot_dir}/boot/grub/grub.cfg
         local grub_device="$(map_device_to_grub2_device ${boot_device})"

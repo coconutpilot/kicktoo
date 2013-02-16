@@ -79,7 +79,9 @@ partition() {
 
 #            add_partition "${device}" "${minor}" "${inputsize}" "${type}" "${bootable}" || die "Could not add partition ${minor} to device ${device}"
 #	    echo "$device $minor $inputsize $type $bootable\n"
-	    spawn "sgdisk -g -n ${minor}::${size} -t ${minor}:${type} ${device}" || die "Could not add GPT partition ${minor} to ${device}"
+            [ "${size}" == "+" ] && size= # a single + is enough
+	    spawn "sgdisk -g -n ${minor}::+${size} -t ${minor}:${type} ${device}" || die "Could not add GPT partition ${minor} to ${device}"
+#	    spawn "partprobe"
         done
 
 #        if [ "$(get_arch)" != "sparc64" ]; then

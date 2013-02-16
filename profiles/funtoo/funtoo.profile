@@ -1,6 +1,7 @@
 gptpart sda 1 8300 100M
-gptpart sda 2 8200 2048M
-gptpart sda 3 8300 +
+gptpart sda 2 ef02 32M
+gptpart sda 3 8200 2048M
+gptpart sda 4 8300 +
 
 format /dev/sda1 ext2
 format /dev/sda2 swap
@@ -10,24 +11,24 @@ mountfs /dev/sda1 ext2 /boot
 mountfs /dev/sda2 swap
 mountfs /dev/sda3 ext4 / noatime
 
-[ "${arch}" == "x86" ] &&   stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
+[ "${arch}" == "x86" ]   && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-32bit/$(uname -m)/stage3-latest.tar.xz
 [ "${arch}" == "amd64" ] && stage_uri http://ftp.osuosl.org/pub/funtoo/funtoo-stable/x86-64bit/generic_64/stage3-latest.tar.xz
 tree_type   snapshot    http://ftp.osuosl.org/pub/funtoo/funtoo-stable/snapshots/portage-latest.tar.xz
 
-# get kernel dotconfig from running kernel
-cat /proc/config.gz | gzip -d > /dotconfig
-# get rid of Gentoo official firmware .config..
-grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-# ..and lzo compression
-grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-kernel_config_file      /dotconfig
-kernel_sources          gentoo-sources
-genkernel_opts          --loglevel=5
+## get kernel dotconfig from running kernel
+#cat /proc/config.gz | gzip -d > /dotconfig
+## get rid of Gentoo official firmware .config..
+#grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
+## ..and lzo compression
+#grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
+#kernel_config_file      /dotconfig
+#kernel_sources          gentoo-sources
+#genkernel_opts          --loglevel=5
 
 # ship the binary kernel instead of compiling (faster)
-#kernel_binary $(pwd)/kbin/kernel-genkernel-${arch}-3.2.1-gentoo-r2
-#initramfs_binary $(pwd)/kbin/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
-#systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
+kernel_binary $(pwd)/kbin/kernel-genkernel-${arch}-3.2.1-gentoo-r2
+initramfs_binary $(pwd)/kbin/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
+systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 
 timezone		UTC
 rootpw 			a

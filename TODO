@@ -17,3 +17,4 @@
   use gdisk instead of fdisk 
   http://www.funtoo.org/wiki/Funtoo_Linux_Installation#Prepare_Hard_Disk
   This should solve https://github.com/r1k0/kicktoo/issues/26
+  get profiles/readme gptpart right
