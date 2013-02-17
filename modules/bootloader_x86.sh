@@ -120,7 +120,7 @@ echo kv $kv
     fi
     [ -z "${bootloader_install_device}" ] && bootloader_install_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
     if ! spawn_chroot "lilo"; then
-        error "Could not install LiLo"
+        error "Could not run lilo"
         return 1
     fi
 }
