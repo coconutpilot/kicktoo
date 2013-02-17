@@ -86,17 +86,25 @@ configure_bootloader_lilo() {
     local boot_minor="$(get_device_and_partition_from_devnode ${boot}  | cut -d '|' -f2)"
     local root="$(echo ${boot_root} | cut -d '|' -f2)"
     local kernel_initrd="$(get_kernel_and_initrd)"
-
+echo boot_root $boot_root
+echo boot $boot
+echo boot_device $boot_device
+echo boot_minor $boot_minor
+echo root $root
+echo kernel_initrd $kernel_initrd
     for k in ${kernel_initrd}; do
         local kernel="$(echo ${k} | cut -d '|' -f1)"
         local initrd="$(echo ${k} | cut -d '|' -f2)"
         local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
+echo kernel $kernel
+echo initrd $initrd
+echo kv $kv
         echo "menuentry \"${distro} Linux ${kv}\" {" >> ${chroot_dir}/etc/lilo.conf
-        local grub_device="$(map_device_to_lilo_device ${boot_device})"
-        if [ -z "${grub_device}" ]; then
-            error "Could not map boot device ${boot_device} to lilo device"
-            return 1
-        fi
+#        local grub_device="$(map_device_to_lilo_device ${boot_device})"
+#        if [ -z "${grub_device}" ]; then
+#            error "Could not map boot device ${boot_device} to lilo device"
+#            return 1
+#        fi
         echo -en "set root=(${grub_device},$(expr ${boot_minor}))\nlinux /${kernel} " >> ${chroot_dir}/etc/lilo.conf
         if [ -z "${initrd}" ]; then
             echo "root=${root}" >> ${chroot_dir}/etc/lilo.conf
