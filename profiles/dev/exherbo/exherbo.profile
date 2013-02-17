@@ -30,7 +30,7 @@ post_setup_fstab(){
     spawn_chroot "cat /proc/config.gz | gzip -d | grep -v CONFIG_EXTRA_FIRMWARE | grep -v LZO > /usr/src/linux/.config" || die "could not copy kernel config"
     spawn_chroot "cd /usr/src/linux && yes '' |  make -s oldconfig && make && make modules_install"                     || die "could not build the kernel"
     spawn_chroot "mount /boot"
-    spawn_chroot "cp /usr/src/linux/arch/${arch}/boot/bzImage /boot/kernel-genkernel-${arch}-${KV}"                     || die "could not copy the kernel"
+    spawn_chroot "cp /usr/src/linux/arch/${arch}/boot/bzImage /boot/kernel-${arch}-${KV}"                     || die "could not copy the kernel"
 
     spawn_chroot "echo exherbo > /etc/hostname"
     spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
@@ -47,5 +47,5 @@ skip install_bootloader
 skip configure_bootloader
 post_configure_bootloader() {
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"
-    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-${KV} root=/dev/sda2\n}\" >  /boot/grub/grub.cfg"
+    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-${arch}-${KV} root=/dev/sda2\n}\" >  /boot/grub/grub.cfg"
 }
