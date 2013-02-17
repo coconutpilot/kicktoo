@@ -62,4 +62,5 @@ funtoo/
 `-- funtoo-kbin.profile
 `-- funtoo.profile
 exherbo/
-`-- exherbo-kbin.profile
+|-- exherbo-kbin.profile
+`-- exherbo.profile
