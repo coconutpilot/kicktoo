@@ -14,7 +14,7 @@ rootpw    a
 bootloader grub
 #extra_packages vim
 
-pre_setup_fstab(){
+post_setup_fstab(){
     spawn_chroot "cave sync"                                           || die "could not sync exheres tree"
     spawn_chroot "cave fix-cache"                                      || die "could not sync exheres tree"
 
@@ -29,7 +29,7 @@ pre_setup_fstab(){
     spawn_chroot "ln -sf /usr/src/linux-${KV} /usr/src/linux"                                                           || die "could not symlink source"
     spawn_chroot "cat /proc/config.gz | gzip -d | grep -v CONFIG_EXTRA_FIRMWARE | grep -v LZO > /usr/src/linux/.config" || die "could not copy kernel config"
     spawn_chroot "cd /usr/src/linux && yes '' |  make -s oldconfig && make && make modules_install"                     || die "could not build the kernel"
-    spawn_chroot "mount /dev/sda1 /boot"
+    spawn_chroot "mount /boot"
     spawn_chroot "cp /usr/src/linux/arch/${arch}/boot/bzImage /boot/kernel-genkernel-${arch}-${KV}"                     || die "could not copy the kernel"
 
     spawn_chroot "echo exherbo > /etc/hostname"
