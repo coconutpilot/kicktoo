@@ -46,7 +46,7 @@ post_configure_bootloader() {
     spawn_chroot "echo exherbo > /etc/hostname"
     spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
     for p in ${extra_packages}; do
-        spawn_chroot "cave resolve ${p} -x" || die "could not install extra packages"
+        spawn_chroot "cave resolve ${p} -x" || die "Could not install extra packages"
     done
 
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"

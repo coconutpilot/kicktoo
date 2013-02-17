@@ -12,21 +12,15 @@ mountfs /dev/sda2 ext4 / noatime
 [ "${arch}" == "amd64" ] && stage_latest amd64
 tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
 
-# get kernel dotconfig from running kernel
+# get kernel dotconfig from the official running kernel
 cat /proc/config.gz | gzip -d > /dotconfig
 # get rid of Gentoo official firmware .config..
 grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
 # ..and lzo compression
 grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-
 kernel_config_file      /dotconfig
 kernel_sources          gentoo-sources
 genkernel_opts          --loglevel=5
-
-# ship the binary kernel instead of compiling (faster)
-#kernel_binary           $(pwd)/kbin/kernel-genkernel-${arch}-3.2.1-gentoo-r2
-#initramfs_binary        $(pwd)/kbin/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
-#systemmap_binary        $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 
 timezone                UTC
 rootpw                  a

@@ -1,51 +1,57 @@
-part sda 1 83 100M  # /boot
-part sda 2 82 2048M # swap
-part sda 3 83 +     # /
+part sda 1 83 100M
+part sda 2 82 2G
+part sda 3 83 8G
+part sda 4 8e +      # linux lvm type
 
-luks bootpw    a    # CHANGE ME
-luks /dev/sda2 swap aes sha256
-luks /dev/sda3 root aes sha256
+lvm_volgroup vg /dev/sda4
 
-format /dev/sda1        ext2
-format /dev/mapper/swap swap
-format /dev/mapper/root ext4
+lvm_logvol vg 10G   usr
+lvm_logvol vg 5G    home
+lvm_logvol vg 5G    opt
+lvm_logvol vg 10G   var
+lvm_logvol vg 2G    tmp
 
-mountfs /dev/sda1        ext2 /boot
-mountfs /dev/mapper/swap swap
-mountfs /dev/mapper/root ext4 / noatime
+format /dev/sda1    ext2
+format /dev/sda2    swap
+format /dev/sda3    ext4
+format /dev/vg/usr  ext4
+format /dev/vg/home ext4
+format /dev/vg/opt  ext4
+format /dev/vg/var  ext4
+format /dev/vg/tmp  ext4
+
+mountfs /dev/sda1    ext2 /boot
+mountfs /dev/sda2    swap
+mountfs /dev/sda3    ext4 /     noatime
+mountfs /dev/vg/usr  ext4 /usr  noatime
+mountfs /dev/vg/home ext4 /home noatime
+mountfs /dev/vg/opt  ext4 /opt  noatime
+mountfs /dev/vg/var  ext4 /var  noatime
+mountfs /dev/vg/tmp  ext4 /tmp  noatime
 
 # retrieve latest autobuild stage version for stage_uri
 [ "${arch}" == "x86" ]   && stage_latest $(uname -m)
 [ "${arch}" == "amd64" ] && stage_latest amd64
 tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
 
-# get kernel dotconfig from the official running kernel
-cat /proc/config.gz | gzip -d > /dotconfig
-# get rid of Gentoo official firmware .config
-grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v LZO                   /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_AES     /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_CBC     /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_SHA256  /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-# enable the required ones
-echo "CONFIG_CRYPTO_AES=y"    >> /dotconfig
-echo "CONFIG_CRYPTO_CBC=y"    >> /dotconfig
-echo "CONFIG_CRYPTO_SHA256=y" >> /dotconfig
-kernel_config_file      /dotconfig
-genkernel_opts          --loglevel=5 --luks
-kernel_sources          gentoo-sources
+# ship the binary kernel instead of compiling (faster)
+kernel_binary           $(pwd)/kbin/lvm/kernel-genkernel-${arch}-3.2.1-gentoo-r2
+initramfs_binary        $(pwd)/kbin/lvm/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
+systemmap_binary        $(pwd)/kbin/lvm/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 
 timezone                UTC
+rootpw                  a
 bootloader              grub
-bootloader_kernel_args  crypt_root=/dev/sda3 # should match root device in the $luks variable
-rootpw                  a # CHANGE ME
+bootloader_kernel_args  dolvm
 keymap                  us # fr be-latin1
-hostname                gentoo-luks
-extra_packages          dhcpcd # openssh syslog-ng
+hostname                gentoo-lvm
+extra_packages          lvm2 dhcpcd # vim openssh vixie-cron syslog-ng
 
-#rcadd                   sshd default
-#rcadd                   syslog-ng default
+rcadd        lvm        default
+rcadd        lvm-monitoring         default
+#rcadd                   sshd       default
 #rcadd                   vixie-cron default
+#rcadd                   syslog-ng  default
 
 #############################################################################
 # 1. commented skip runsteps are actually running!                          #
@@ -152,11 +158,8 @@ post_unpack_repo_tree() {
 # post_install_initramfs_builder() {
 # }
 
-pre_build_kernel() {
-    spawn_chroot "emerge cryptsetup --autounmask-write" || die "could not autounmask cryptsetup"
-    spawn_chroot "etc-update --automode -5" || die "could not etc-update --automode -5"
-    spawn_chroot "emerge cryptsetup" || die "could not emerge cryptsetup"
-}
+# pre_build_kernel() {
+# }
 # skip build_kernel
 # post_build_kernel() {
 # }
@@ -212,18 +215,8 @@ pre_build_kernel() {
 # pre_install_extra_packages() {
 # }
 # skip install_extra_packages
-post_install_extra_packages() {
-    # this tells where to find the swap to encrypt
-    cat >> ${chroot_dir}/etc/conf.d/dmcrypt <<EOF
-swap=swap
-source='/dev/sda2'
-EOF
-    # this will activate the encrypted swap on boot
-    cat >> ${chroot_dir}/etc/conf.d/local <<EOF
-mkswap /dev/sda2
-swapon /dev/sda2
-EOF
-}
+# post_install_extra_packages() {
+# }
 
 # pre_add_and_remove_services() {
 # }

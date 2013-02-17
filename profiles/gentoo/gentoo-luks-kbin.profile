@@ -19,21 +19,10 @@ mountfs /dev/mapper/root ext4 / noatime
 [ "${arch}" == "amd64" ] && stage_latest amd64
 tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
 
-# get kernel dotconfig from the official running kernel
-cat /proc/config.gz | gzip -d > /dotconfig
-# get rid of Gentoo official firmware .config
-grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v LZO                   /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_AES     /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_CBC     /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-grep -v CONFIG_CRYPTO_SHA256  /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-# enable the required ones
-echo "CONFIG_CRYPTO_AES=y"    >> /dotconfig
-echo "CONFIG_CRYPTO_CBC=y"    >> /dotconfig
-echo "CONFIG_CRYPTO_SHA256=y" >> /dotconfig
-kernel_config_file      /dotconfig
-genkernel_opts          --loglevel=5 --luks
-kernel_sources          gentoo-sources
+# ship the binary kernel instead of compiling (faster)
+kernel_binary           $(pwd)/kbin/luks/kernel-genkernel-${arch}-3.2.1-gentoo-r2
+initramfs_binary        $(pwd)/kbin/luks/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
+systemmap_binary        $(pwd)/kbin/luks/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 
 timezone                UTC
 bootloader              grub

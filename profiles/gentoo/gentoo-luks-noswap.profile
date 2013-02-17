@@ -15,21 +15,15 @@ mountfs /dev/mapper/root ext4 / noatime
 [ "${arch}" == "amd64" ] && stage_latest amd64
 tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar.bz2
 
-# get kernel dotconfig from running kernel
+# get kernel dotconfig from the official running kernel
 cat /proc/config.gz | gzip -d > /dotconfig
 # get rid of Gentoo official firmware .config..
 grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
 # ..and lzo compression
 grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
-
 kernel_config_file      /dotconfig
 kernel_sources          gentoo-sources
 genkernel_opts          --loglevel=5 --luks
-
-# ship the binary kernel instead of compiling (faster)
-#kernel_binary           $(pwd)/kbin/luks/kernel-genkernel-${arch}-3.2.1-gentoo-r2
-#initramfs_binary        $(pwd)/kbin/luks/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
-#systemmap_binary        $(pwd)/kbin/luks/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 
 timezone                UTC
 bootloader              grub
@@ -149,10 +143,9 @@ post_unpack_repo_tree() {
 # }
 
 pre_build_kernel() {
-    # FIXME don't global USE static-libs but apply only for cryptsetup and deps
-    spawn_chroot "emerge gentoolkit"    || die "could not merge gentoolkit"
-    spawn_chroot "euse -E static-libs"  || die "could not enable static-libs USE"
-    spawn_chroot "emerge cryptsetup"    || die "could not emerge cryptsetup"
+    spawn_chroot "emerge cryptsetup --autounmask-write" || die "could not autounmask cryptsetup"
+    spawn_chroot "etc-update --automode -5" || die "could not etc-update --automode -5"
+    spawn_chroot "emerge cryptsetup" || die "could not emerge cryptsetup"
 }
 # skip build_kernel
 # post_build_kernel() {

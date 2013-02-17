@@ -8,6 +8,7 @@ mountfs /dev/sda1 ext2 /boot
 mountfs /dev/sda2 ext4 / noatime
 
 # don't compile kernel # systemd wants 3.5 or more
+# think about updating kbins
 kernel_binary $(pwd)/kbin/kernel-genkernel-${arch}-3.2.1-gentoo-r2
 initramfs_binary $(pwd)/kbin/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
 systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
