@@ -138,12 +138,8 @@ rcadd        lvm-monitoring         default
 # pre_unpack_repo_tree() {
 # }
 # skip unpack_repo_tree
-post_unpack_repo_tree() {
-    # this makes sure we use the newest profile
-    # we end up doing this because the 13.0 profile link
-    # is not yet propagated into the stage tarball
-    spawn_chroot "eselect profile set default/linux/${arch}/13.0"
-}
+# post_unpack_repo_tree() {
+# }
 
 # pre_copy_kernel() {
 # }
