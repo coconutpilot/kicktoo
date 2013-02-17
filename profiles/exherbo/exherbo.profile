@@ -12,6 +12,7 @@ mountfs /dev/sda2 ext4 / noatime
 stage_uri http://dev.exherbo.org/stages/exherbo-x86-current.tar.xz
 rootpw    a
 bootloader grub
+#extra_packages vim
 
 pre_setup_fstab(){
     spawn_chroot "cave sync"                                           || die "could not sync exheres tree"
