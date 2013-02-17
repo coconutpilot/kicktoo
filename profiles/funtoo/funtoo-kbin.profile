@@ -16,9 +16,9 @@ mountfs /dev/sda4 ext4 / noatime
 tree_type   snapshot    http://ftp.osuosl.org/pub/funtoo/funtoo-stable/snapshots/portage-latest.tar.xz
 
 # ship the binary kernel instead of compiling (faster)
-kernel_binary $(pwd)/kbin/kernel-genkernel-${arch}-3.2.1-gentoo-r2
-initramfs_binary $(pwd)/kbin/initramfs-genkernel-${arch}-3.2.1-gentoo-r2
-systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
+kernel_binary $(pwd)/kbin/kernel-genkernel-${arch}-3.5.7-gentoo
+initramfs_binary $(pwd)/kbin/initramfs-genkernel-${arch}-3.5.7-gentoo
+systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.5.7-gentoo
 
 timezone		UTC
 rootpw 			a
