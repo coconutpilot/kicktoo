@@ -47,5 +47,5 @@ skip install_bootloader
 skip configure_bootloader
 post_configure_bootloader() {
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"
-    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-${KV}" root=/dev/sda2\n}\" >  /boot/grub/grub.cfg"
+    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-${KV} root=/dev/sda2\n}\" >  /boot/grub/grub.cfg"
 }
