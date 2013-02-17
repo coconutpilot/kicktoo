@@ -51,15 +51,22 @@ Kicktoo is meant to automate the manual steps required to build any Portage base
 
 gentoo/
 |-- gentoo-dedibox-SC.profile
+|-- gentoo-kbin.profile
 |-- gentoo-ltsp.profile
+|-- gentoo-luks-kbin.profile
+|-- gentoo-luks-noswap-kbin.profile
 |-- gentoo-luks-noswap.profile
 |-- gentoo-luks.profile
+|-- gentoo-lvm-kbin.profile
 |-- gentoo-lvm.profile
+|-- gentoo-noboot-kbin.profile
 |-- gentoo-noboot.profile
+|-- gentoo-raspberrypi.profile
+|-- gentoo-sdmmc.profile
 `-- gentoo.profile
 funtoo/
 |-- funtoo-dedibox-SC.profile
-`-- funtoo-kbin.profile
+|-- funtoo-kbin.profile
 `-- funtoo.profile
 exherbo/
 |-- exherbo-kbin.profile
