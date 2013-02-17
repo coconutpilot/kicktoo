@@ -516,7 +516,7 @@ install_bootloader() {
 }
 
 configure_bootloader() {
-    detect_grub2
+    [ "$bootloader" != "lilo" ] && detect_grub2
 
     if $(isafunc configure_bootloader_${bootloader}); then
         configure_bootloader_${bootloader} || die "Could not configure bootloader ${bootloader}"

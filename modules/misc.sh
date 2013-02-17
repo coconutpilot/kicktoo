@@ -30,7 +30,7 @@ detect_baselayout2() {
 detect_grub2() {
     # find installed grub version: 0 is version 1 and 1 is version
     # FIXME only works for gentoo/funtoo but not exherbo :(
-    vgrub=$(cat ${chroot_dir}/var/db/pkg/sys-boot/grub*/PF | cut -d"-" -f2 | cut -d. -f1)
+    [ -f ${chroot_dir}/var/db/pkg/sys-boot/grub*/PF ] &&vgrub=$(cat ${chroot_dir}/var/db/pkg/sys-boot/grub*/PF | cut -d"-" -f2 | cut -d. -f1)
     if [ "$vgrub" == "1" ] || [ "$vgrub" == "2" ]; then
         bootloader=grub2
     else
