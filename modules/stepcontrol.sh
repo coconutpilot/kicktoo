@@ -3,7 +3,7 @@ isafunc() {
 
     declare -f ${func} > /dev/null
     local exitcode=$?
-    debug isafunc "declare -f ${func} with exitcode $exitcode"
+#    debug isafunc "${func} with exitcode $exitcode"
     return $exitcode
 }
 
@@ -19,7 +19,7 @@ runstep() {
     fi
 
     if $(isafunc pre_${func}); then
-        echo -e "  => pre_${func}()"
+        echo -e "  >>> pre_${func}()"
         debug runstep "executing pre-hook for ${func}"
         pre_${func}
     fi
@@ -34,7 +34,7 @@ runstep() {
     fi
 
     if $(isafunc post_${func}); then
-        echo -e "  => post_${func}()"
+        echo -e "  >>> post_${func}()"
         debug runstep "executing post-hook for ${func}"
         post_${func}
     fi

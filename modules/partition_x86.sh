@@ -2,8 +2,8 @@ create_disklabel() {
     local device=$1
     
     debug create_disklabel "creating new msdos disklabel"
-# fdisk won't convert back from GPT
-#    fdisk_command ${device} "o"
+    #NOTE fdisk won't convert back from GPT use parted instead
+    #fdisk_command ${device} "o"
     spawn "parted ${device} --script -- mklabel msdos"
     return $?
 }

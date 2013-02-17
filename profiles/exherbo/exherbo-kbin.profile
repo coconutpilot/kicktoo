@@ -17,21 +17,6 @@ rootpw    a
 bootloader grub
 #extra_packages vim
 
-pre_setup_fstab(){
-    spawn_chroot "cave sync"                                           || die "could not sync exheres tree"
-    spawn_chroot "cave fix-cache"                                      || die "could not sync exheres tree"
-
-    spawn_chroot "echo \"*/* systemd\" >> /etc/paludis/options.conf"   || die "could not copy systemd config"
-    spawn_chroot "cave resolve systemd -x"                             || die "could not install systemd"
-    spawn_chroot "eclectic init set systemd"                           || die "could not init set systemd"
-#    spawn_chroot "cave resolve world -x"                               || warn "could not update world"
-
-    spawn_chroot "echo exherbo > /etc/hostname"
-    spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
-    for p in ${extra_packages}; do
-        spawn_chroot "cave resolve ${p} -x"                            || die "could not install extra packages"
-    done
-}
 skip install_kernel_builder
 skip install_initramfs_builder
 skip build_kernel
@@ -40,6 +25,20 @@ skip setup_keymap
 skip install_bootloader
 skip configure_bootloader
 post_configure_bootloader() {
+    spawn_chroot "cave sync"                                           || die "Could not sync exheres tree"
+    spawn_chroot "cave fix-cache"                                      || die "Could not sync exheres tree"
+
+    spawn_chroot "echo \"*/* systemd\" >> /etc/paludis/options.conf"   || die "Could not copy systemd config"
+    spawn_chroot "cave resolve systemd -x"                             || die "Could not install systemd"
+    spawn_chroot "eclectic init set systemd"                           || die "Could not init set systemd"
+#    spawn_chroot "cave resolve world -x"                               || warn "Could not update world"
+
+    spawn_chroot "echo exherbo > /etc/hostname"
+    spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
+    for p in ${extra_packages}; do
+        spawn_chroot "cave resolve ${p} -x"                            || die "Could not install extra packages"
+    done
+
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"
     spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-3.2.1-gentoo-r2 root=/dev/sda2\n  initrd /initramfs-genkernel-${arch}-3.2.1-gentoo-r2\n}\" >  /boot/grub/grub.cfg"
 }

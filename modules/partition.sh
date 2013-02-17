@@ -85,23 +85,6 @@ sfdisk_command() {
     return $?
 }
 
-#sgdisk_command() {
-#    local device=$1
-#    local heads=$(echo ${geometry}     | cut -d: -f1)
-#    local sectors=$(echo ${geometry}   | cut -d: -f2)
-#    local cylinders=$(echo ${geometry} | cut -d: -f3)
-#    local geometry_args
-#
-#    [ -n "${heads}" ]     && geometry_args="-H ${heads}"
-#    [ -n "${sectors}" ]   && geometry_args="${geometry_args} -S ${sectors}"
-#    [ -n "${cylinders}" ] && geometry_args="${geometry_args} -C ${cylinders}"
-#
-#    debug sgdisk_command "running sgdisk partitions '${partitions}' on device ${device} with geometry ${geometry_args}"
-#    spawn "echo -e '${partitions}' | sgdisk -uM ${geometry_args} ${device}" && spawn "partprobe ${device}"
-#
-#    return $?
-#}
-
 local arch=$(get_arch)
 if [ -f "modules/partition_${arch}.sh" ] || [ -f "/usr/share/kicktoo/modules/partition_${arch}.sh" ]; then
     debug partition.sh "loading arch-specific module partition_${arch}.sh"

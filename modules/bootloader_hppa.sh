@@ -13,7 +13,6 @@ configure_bootloader_palo() {
     echo "--init-partitioned=${boot_device}" > ${chroot_dir}/etc/palo.conf
     local kernel="$(echo ${kernel_initrd} | cut -d '|' -f1)"
     local initrd="$(echo ${kernel_initrd} | cut -d '|' -f2)"
-#    local kv="$(echo ${kernel} | sed -e 's:^kernel-genkernel-[^-]\+-::')"
     local kv="$(echo ${kernel} | sed -e 's:^kernel-*-[^-]\+-::' | sed -e 's:[^-]\+-::')"
     echo -n "--commandline=${boot_minor}/boot/${kernel} " >> ${chroot_dir}/etc/palo.conf
     if [ -z "${initrd}" ]; then

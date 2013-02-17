@@ -28,6 +28,11 @@ part() {
     debug part "${drive_temp} is now: $(eval echo \${${drive_temp}})"
 }
 
+# FIXME? part and gptpart both eval ${drive_temp} 
+# means they will overwrite if both in same profile
+# does it even make sense to use both at same time?
+# mmm yeah maybe if used on different disks
+
 gptpart() {
     do_part=yes
     local drive=$1
