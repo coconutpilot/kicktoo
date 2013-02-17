@@ -1,4 +1,4 @@
-KV="3.4.31" # systemd wants 3.5 or more
+KV="3.6.11" # systemd wants 3.5 or more
 
 part sda 1 83 100M
 part sda 2 83 +
