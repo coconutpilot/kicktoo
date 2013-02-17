@@ -1,4 +1,4 @@
-KV="3.4.31"
+KV="3.4.31" # systemd wants 3.5 or more
 
 part sda 1 83 100M
 part sda 2 83 +
@@ -17,6 +17,7 @@ systemmap_binary $(pwd)/kbin/System.map-genkernel-${arch}-3.2.1-gentoo-r2
 stage_uri http://dev.exherbo.org/stages/exherbo-x86-current.tar.xz
 rootpw    a
 bootloader grub
+#extra_packages vim
 
 pre_setup_fstab(){
     spawn_chroot "cave sync"                                           || die "could not sync exheres tree"
@@ -27,9 +28,10 @@ pre_setup_fstab(){
     spawn_chroot "eclectic init set systemd"                           || die "could not init set systemd"
 #    spawn_chroot "cave resolve world -x"                               || warn "could not update world"
 
-    spawn_chroot "echo exherbo > /etc/hostname"                                                                         || die "could not create /etc/hostname"
+    spawn_chroot "echo exherbo > /etc/hostname"
+    spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
     for p in ${extra_packages}; do
-        spawn_chroot "cave resolve -x ${p}"                                                                             || die "could not install extra packages"
+        spawn_chroot "cave resolve ${p} -x"                            || die "could not install extra packages"
     done
 }
 skip install_kernel_builder
@@ -41,7 +43,5 @@ skip install_bootloader
 skip configure_bootloader
 post_configure_bootloader() {
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"
-    spawn_chroot "echo \"127.0.0.1 localhost exherbo\n::1 localhost\n\" > /etc/hosts"
-
     spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-3.2.1-gentoo-r2 root=/dev/sda2\n  initrd /initramfs-genkernel-${arch}-3.2.1-gentoo-r2\n}\" >  /boot/grub/grub.cfg"
 }
