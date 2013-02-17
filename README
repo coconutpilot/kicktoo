@@ -59,6 +59,7 @@ gentoo/
 `-- gentoo.profile
 funtoo/
 |-- funtoo-dedibox-SC.profile
+`-- funtoo-kbin.profile
 `-- funtoo.profile
 exherbo/
-`-- exherbo.profile
+`-- exherbo-kbin.profile
