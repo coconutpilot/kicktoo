@@ -106,7 +106,7 @@ echo hostname $hostname
         echo -e "image=/boot/${kernel}\n"              >> ${chroot_dir}/etc/lilo.conf
         echo -e "  label=${hostname}\n"                >> ${chroot_dir}/etc/lilo.conf
         echo -e "  read-only\n"                        >> ${chroot_dir}/etc/lilo.conf
-        echo -e "  root=${root}\n"                     >> ${chroot_dir}/etc/lilo.conf
+#        echo -e "  root=${root}\n"                     >> ${chroot_dir}/etc/lilo.conf # this is for non initramfs enabled
         echo -e "  append=\"root=/dev/ram0 init=/linuxrc ramdisk=8192 real_root=${root} ${bootloader_kernel_args}\"\n" >> ${chroot_dir}/etc/lilo.conf
         echo -e "  initrd=/boot/${initrd}\n\n"         >> ${chroot_dir}/etc/lilo.conf
 #        echo "menuentry \"${distro} Linux ${kv}\" {" >> ${chroot_dir}/etc/lilo.conf
