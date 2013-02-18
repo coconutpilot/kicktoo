@@ -211,7 +211,7 @@ runstep starting_cleanup                                                "Cleanin
 
 debug main                                                              "Pushing system for ${arch}"
 
-run_pre_install_script                                                  "Running pre-install script if any"
+runstep run_pre_install_script                                          "Running pre-install script if any"
 
 [ "${do_part}"          == "yes" ] && runstep partition                 "Partitioning"
 [ "${do_raid}"          == "yes" ] && runstep setup_mdraid              "Setting up RAID arrays"
