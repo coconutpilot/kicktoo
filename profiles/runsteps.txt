@@ -3,6 +3,12 @@
 # 2. put your custom code if any in pre_ or post_ functions                 #
 #############################################################################
 
+# pre_run_pre_install_script() {
+# }
+# skip run_pre_install_script 
+# post_run_pre_install_script() {
+# }
+
 # pre_partition() {
 # }
 # skip partition
