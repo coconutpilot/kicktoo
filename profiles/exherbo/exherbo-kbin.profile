@@ -40,5 +40,5 @@ post_configure_bootloader() {
     done
 
     spawn_chroot "grub-install --force /dev/sda" || die "Could not install grub to /boot/grub"
-    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-3.2.1-gentoo-r2 root=/dev/sda2\n  initrd /initramfs-genkernel-${arch}-3.2.1-gentoo-r2\n}\" >  /boot/grub/grub.cfg"
+    spawn_chroot "echo \"set timeout=10\nset default=0\nmenuentry Exherbo {\n  set root=(hd0,1)\n  linux /kernel-genkernel-${arch}-3.5.7-gentoo root=/dev/sda2\n  initrd /initramfs-genkernel-${arch}-3.2.1-gentoo-r2\n}\" >  /boot/grub/grub.cfg"
 }
