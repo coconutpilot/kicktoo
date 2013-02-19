@@ -383,13 +383,13 @@ unpack_repo_tree() {
         local extension=${portage_snapshot_uri##*.}
 
         if [ "$extension" == "bz2" ] ; then
-            spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
+            spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"        || die "Could not untar portage tarball"
         elif [ "$extension" == "gz" ] ; then
-            spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"      || die "Could not untar portage tarball"
+            spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"        || die "Could not untar portage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"        || die "Could not untar portage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr"    || die "Could not untar portage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr" || die "Could not untar portage tarball"
         fi
     fi
     
@@ -402,13 +402,13 @@ unpack_repo_tree() {
         
         spawn "mkdir ${chroot_dir}/usr/portage/packages"	|| die "Could not create '/usr/portage/packages'"
 		if [ "$extension" == "bz2" ] ; then
-            spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"      || die "Could not untar portage tarball"
+            spawn "tar xjpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"        || die "Could not untar portage tarball"
         elif [ "$extension" == "gz" ] ; then
-            spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"      || die "Could not untar portage tarball"
+            spawn "tar xzpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"        || die "Could not untar portage tarball"
         elif [ "$extension" == "xz" ] ; then
-            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+            spawn "tar Jxpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"        || die "Could not untar portage tarball"
         elif [ "$extension" == "lzma" ] ; then
-            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage"    || die "Could not untar portage tarball"
+            spawn "tar --lzma -xpf ${chroot_dir}/${tarball} -C ${chroot_dir}/usr/portage" || die "Could not untar portage tarball"
         fi
     fi
 }
@@ -416,8 +416,11 @@ unpack_repo_tree() {
 copy_kernel() {
     spawn_chroot "mount /boot"
     cp "${kernel_binary}"    "${chroot_dir}/boot" || die "Could not copy precompiled kernel to ${chroot_dir}/boot"
-    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled initramfs to ${chroot_dir}/boot"
     cp "${systemmap_binary}" "${chroot_dir}/boot" || warn "Could not copy precompiled System.map to ${chroot_dir}/boot"
+}
+
+copy_initramfs() {
+    cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled initramfs to ${chroot_dir}/boot"
 }
 
 install_kernel_builder() {
