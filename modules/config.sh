@@ -288,18 +288,18 @@ kernel_binary() {
     kernel_binary="${path}"
 }
 
-initramfs_binary() {
-    do_kbin=yes
-    local path=$1
-
-    initramfs_binary="${path}"
-}
-
 systemmap_binary() {
     do_kbin=yes
     local path=$1
 
     systemmap_binary="${path}"
+}
+
+initramfs_binary() {
+    do_irfs=yes
+    local path=$1
+
+    initramfs_binary="${path}"
 }
 
 # defaults to genkernel

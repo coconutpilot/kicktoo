@@ -93,6 +93,12 @@
 # post_copy_kernel() {
 # }
 
+# pre_copy_initramfs() {
+# }
+# skip copy_initramfs
+# post_copy_initramfs() {
+# }
+
 # pre_build_kernel() {
 # }
 # skip build_kernel
