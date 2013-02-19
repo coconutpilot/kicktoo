@@ -22,7 +22,7 @@ rootpw                  a
 bootloader              grub
 keymap                  us # be-latin1 fr
 hostname                gentoo
-extra_packages          dhcpcd syslog-ng vim # openssh
+extra_packages          dhcpcd # syslog-ng vim openssh
 
 #rcadd                   sshd       default
 #rcadd                   syslog-ng  default
