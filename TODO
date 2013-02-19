@@ -7,5 +7,5 @@
 - make profiles:
     gentoo-luks-lvm.profile
     gentoo-luks-lvm-kbin.profile
-    gentoo-noinitramfs.profile (take cp "${initramfs_binary}" "${chroot_dir}/boot" out of copy_kernel() and have copy_initramfs()))
+    gentoo-noinitramfs.profile
     gentoo-noinitramfs-kbin.profile
