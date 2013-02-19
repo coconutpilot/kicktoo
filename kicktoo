@@ -5,27 +5,6 @@ VERSION=0.5.0
 debug=0
 verbose=0
 
-do_part=0
-do_raid=0
-do_lvm=0
-do_luks=0
-do_makeconf=0
-do_locale=0
-do_kernel=0
-do_postnet=0
-do_password=0
-do_tz=0
-do_keymap=0
-do_host=0
-do_localmounts=0
-do_netmounts=0
-do_stage_latest=0
-do_stage_uri=0
-do_format=0
-do_bootloader=0
-do_xpkg=0
-do_services=0
-
 trap "failure_cleanup" TERM KILL INT QUIT ABRT
 
 if [ "$(whoami)" != "root" ]; then
