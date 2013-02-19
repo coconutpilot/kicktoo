@@ -7,5 +7,5 @@
 - make profiles:
     gentoo-luks-lvm.profile
     gentoo-luks-lvm-kbin.profile
-    gentoo-noinitramfs.profile
+    gentoo-noinitramfs.profile (will have to split do_kernel to do_irfs)
     gentoo-noinitramfs-kbin.profile
