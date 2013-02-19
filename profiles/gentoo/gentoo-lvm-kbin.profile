@@ -37,7 +37,7 @@ tree_type   snapshot    http://distfiles.gentoo.org/snapshots/portage-latest.tar
 # ship the binary kernel instead of compiling (faster)
 kernel_binary           $(pwd)/kbin/kernel-genkernel-${arch}-3.5.7-gentoo
 systemmap_binary        $(pwd)/kbin/System.map-genkernel-${arch}-3.5.7-gentoo
-initramfs_binary        $(pwd)/kbin/lvm/initramfs-genkernel-${arch}-3.5.7-gentoo
+initramfs_binary        $(pwd)/kbin/initramfs-genkernel-${arch}-3.5.7-gentoo
 
 timezone                UTC
 rootpw                  a
