@@ -14,3 +14,6 @@
     provide a non initramfs enabled kernel?
     pass a kernel arg to disable initramfs?
 - split genkernel_opts into genkernel_k_opts and genkernel_irfs_opts
+    code wise it's not needed since we call 'genkernel $genkernel_opts kernel|initramfs' 
+    so if genkernel_opts=--luks for 'genkernel $genkernel_opts kernel' it won't pull the initramfs
+    but splitting into 2 options sounds better (genkernel might kernel and/or initramfs options only)
