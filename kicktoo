@@ -211,7 +211,7 @@ fi
 [ "${do_tree}"          == "yes" ] && runstep fetch_repo_tree           "Fetching repository tree"
 [ "${do_tree}"          == "yes" ] && runstep unpack_repo_tree          "Unpacking repository tree"
 [ "${do_kbin}"          == "yes" ] && runstep copy_kernel               "Copying pre compiled kernel"
-[ "${do_kirfs}"         == "yes" ] && runstep copy_initramfs            "Copying pre packaged initramfs"
+[ "${do_irfsbin}"       == "yes" ] && runstep copy_initramfs            "Copying pre packaged initramfs"
 [ "${do_kernel}"        == "yes" ] && runstep install_kernel_builder    "Installing kernel builder"
 [ "${do_kernel}"        == "yes" ] && runstep install_initramfs_builder "Installing initramfs builder"
 [ "${do_kernel}"        == "yes" ] && runstep build_kernel              "Building kernel"

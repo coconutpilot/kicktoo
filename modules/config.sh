@@ -296,7 +296,7 @@ systemmap_binary() {
 }
 
 initramfs_binary() {
-    do_kirfs=yes
+    do_irfsbin=yes
     local path=$1
 
     initramfs_binary="${path}"
