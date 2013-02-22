@@ -41,8 +41,9 @@ grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconf
 # ..and lzo compression
 grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
 kernel_config_file      /dotconfig
-genkernel_opts          --loglevel=5 --lvm
 kernel_sources          gentoo-sources
+initramfs               yes
+genkernel_opts          --loglevel=5 --lvm
 
 timezone                UTC
 rootpw                  a

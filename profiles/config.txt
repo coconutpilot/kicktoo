@@ -312,6 +312,19 @@ kernel_binary - Specifies the file to a custom kernel binary
   Parameters:
     path - path to the location of the custom kernel binary
 
+=====================================================
+initramfs - Specifies if an initramfs should be built
+
+  Usage:
+    initramfs <arg>
+
+  Parameters:
+    arg - can be trash args but must not be zero sized variable
+
+NOTE: makes no sense using this option with kbin  profiles
+      since a precompiled kernel has no modules the initramfs 
+      can feed from
+
 ==================================================================
 initramfs_binary - Specifies the file to a custom initramfs binary
 

@@ -32,8 +32,9 @@ echo "CONFIG_CRYPTO_AES=y"    >> /dotconfig
 echo "CONFIG_CRYPTO_CBC=y"    >> /dotconfig
 echo "CONFIG_CRYPTO_SHA256=y" >> /dotconfig
 kernel_config_file      /dotconfig
-genkernel_opts          --loglevel=5 --luks
 kernel_sources          gentoo-sources
+initramfs               yes
+genkernel_opts          --loglevel=5 --luks
 
 timezone                UTC
 bootloader              grub

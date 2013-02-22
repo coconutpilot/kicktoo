@@ -461,12 +461,16 @@ build_kernel() {
 }
 
 build_initramfs() {
-    if [ "${initramfs_builder}" == "genkernel" ]; then
-        spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "Could not build initramfs"
-    elif [ "${initramfs_builder}" == "kigen" ]; then
-        spawn_chroot "kigen ${kigen_initramfs_opts} initramfs"  || die "Could not build initramfs"
-    elif [ "${initramfs_builder}" == "dracut" ]; then
-        spawn_chroot "dracut --force ${dracut_initramfs_opts}"  || die "Could not build initramfs"
+    if [ -n "${initramfs}" ]; then
+        if [ "${initramfs_builder}" == "genkernel" ]; then
+            spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "Could not build initramfs"
+        elif [ "${initramfs_builder}" == "kigen" ]; then
+            spawn_chroot "kigen ${kigen_initramfs_opts} initramfs"  || die "Could not build initramfs"
+        elif [ "${initramfs_builder}" == "dracut" ]; then
+            spawn_chroot "dracut --force ${dracut_initramfs_opts}"  || die "Could not build initramfs"
+        fi
+    else
+        warn "No initramfs has been setup, skipping"
     fi
 }
 
