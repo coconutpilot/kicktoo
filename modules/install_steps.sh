@@ -420,7 +420,7 @@ copy_kernel() {
 }
 
 copy_initramfs() {
-    # FIXME if /boot is not mounted mount it
+    spawn_chroot "[ -z \"\$(mount | grep /boot)\" ] && mount /boot"
     cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled initramfs to ${chroot_dir}/boot"
 }
 
