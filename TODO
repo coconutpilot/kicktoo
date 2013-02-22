@@ -1,6 +1,6 @@
--------------
-= Wish List =
--------------
+-----------------------
+= Wish list and fixme =
+-----------------------
 
 - add swap partition as extended by default instead of primary (this would allow gentoo-lvm.profile and another system to dual boot)
 - make chroot.sh more usable
@@ -9,3 +9,8 @@
     gentoo-luks-lvm-kbin.profile
     gentoo-noinitramfs.profile (will have to split do_kernel to do_irfs)
     gentoo-noinitramfs-kbin.profile
+- find a way to get the kernel to boot with no initramfs 
+  (if 'initramfs yes' not set, we have a kernel issue )
+    provide a non initramfs enabled kernel?
+    pass a kernel arg to disable initramfs?
+
