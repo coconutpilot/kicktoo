@@ -13,4 +13,4 @@
   (if 'initramfs yes' not set, we have a kernel issue )
     provide a non initramfs enabled kernel?
     pass a kernel arg to disable initramfs?
-
+- split genkernel_opts into genkernel_k_opts and genkernel_irfs_opts
