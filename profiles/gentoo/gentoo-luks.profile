@@ -33,7 +33,7 @@ echo "CONFIG_CRYPTO_CBC=y"    >> /dotconfig
 echo "CONFIG_CRYPTO_SHA256=y" >> /dotconfig
 kernel_config_file      /dotconfig
 kernel_sources          gentoo-sources
-initramfs               yes
+initramfs_source        yes
 genkernel_opts          --loglevel=5 --luks
 
 timezone                UTC

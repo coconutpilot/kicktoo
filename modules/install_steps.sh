@@ -462,7 +462,7 @@ build_kernel() {
 }
 
 build_initramfs() {
-    if [ -n "${initramfs}" ]; then
+    if [ -n "${initramfs_source}" ]; then
         if [ "${initramfs_builder}" == "genkernel" ]; then
             spawn_chroot "genkernel ${genkernel_opts} initramfs"    || die "Could not build initramfs"
         elif [ "${initramfs_builder}" == "kigen" ]; then

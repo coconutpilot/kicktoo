@@ -295,11 +295,11 @@ systemmap_binary() {
     systemmap_binary="${path}"
 }
 
-initramfs() {
+initramfs_source() {
     do_irfs=yes
     local arg=$1
 
-    initramfs="$1"
+    initramfs_source="$1"
 }
 
 initramfs_binary() {

@@ -42,7 +42,7 @@ grep -v CONFIG_EXTRA_FIRMWARE /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconf
 grep -v LZO /dotconfig > /dotconfig2 ; mv /dotconfig2 /dotconfig
 kernel_config_file      /dotconfig
 kernel_sources          gentoo-sources
-initramfs               yes
+initramfs_source        yes
 genkernel_opts          --loglevel=5 --lvm
 
 timezone                UTC
