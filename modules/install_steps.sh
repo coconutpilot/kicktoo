@@ -420,6 +420,7 @@ copy_kernel() {
 }
 
 copy_initramfs() {
+    # FIXME if /boot is not mounted mount it
     cp "${initramfs_binary}" "${chroot_dir}/boot" || die "Could not copy precompiled initramfs to ${chroot_dir}/boot"
 }
 
@@ -478,13 +479,14 @@ setup_network_post() {
     if [ -n "${net_devices}" ]; then
         for net_device in ${net_devices}; do
             local device="$(echo ${net_device}  | cut -d '|' -f1)"
-            local ipdhcp="$(echo ${net_device}  | cut -d '|' -f2)"
+            local ipdhcp="$(echo ${net_device}  | cut -d '|' -f2 | tr '[:upper:]' '[:lower:]')"
             local gateway="$(echo ${net_device} | cut -d '|' -f3)"
-            if [ "${ipdhcp}" = "dhcp" ] || [ "${ipdhcp}" = "DHCP" ]; then
-                echo "config_${device}=( \"dhcp\" )" >> ${chroot_dir}/etc/conf.d/net
-            else
-                echo -e "config_${device}=( \"${ipdhcp}\" )\nroutes_${device}=( \"default via ${gateway}\" )" >> ${chroot_dir}/etc/conf.d/net
-            fi
+            case "${ipdhcp}" in
+                "dhcp"|"noop"|"null"|"apipa")
+                    echo "config_${device}=( \"${ipdhcp}\" )" >> ${chroot_dir}/etc/conf.d/net ;;
+                *)
+                    echo -e "config_${device}=( \"${ipdhcp}\" )\nroutes_${device}=( \"default via ${gateway}\" )" >> ${chroot_dir}/etc/conf.d/net ;;
+            esac
             if [ ! -e "${chroot_dir}/etc/init.d/net.${device}" ]; then
                 spawn_chroot "ln -s net.lo /etc/init.d/net.${device}" || die "Could not create symlink for device ${device}"
             fi
