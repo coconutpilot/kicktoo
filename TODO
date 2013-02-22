@@ -17,3 +17,5 @@
     code wise it's not needed since we call 'genkernel $genkernel_opts kernel|initramfs' 
     so if genkernel_opts=--luks for 'genkernel $genkernel_opts kernel' it won't pull the initramfs
     but splitting into 2 options sounds better (genkernel might kernel and/or initramfs options only)
+- fix design conflict between initramfs_source and initramfs_builder
+    why not having 'initramfs_source genkernel'?
